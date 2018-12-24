@@ -1,0 +1,26 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+<title>个人工作集合</title>
+<link rel="stylesheet" type="text/css" href="news.css" />
+</head>
+<body>
+	<!-- <li>搜索小说</li> -->
+	<form method="get" action="/searchDirectory">
+		Search: <input type="text" name="name" value="" size="17"
+			autocorrect="off" spellcheck="false" autocapitalize="off"
+			autocomplete="false">
+	</form>
+
+	<!-- <li>搜索下载小说</li> -->
+	<form method="get" action="/search">
+		Search: <input type="text" name="name" value="" size="17"
+			autocorrect="off" spellcheck="false" autocapitalize="off"
+			autocomplete="false">
+	</form>
+</body>
+
+</html>
