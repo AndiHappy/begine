@@ -42,7 +42,7 @@ public class BookSearchController {
 
 	@RequestMapping("/hello")
 	public ModelAndView greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
-		ModelAndView view = new ModelAndView("index");
+		ModelAndView view = new ModelAndView("hello");
 		view.addObject("searchName", "searchValue" + Math.random() + " " + name);
 		return view;
 	}
