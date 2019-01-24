@@ -55,7 +55,6 @@ public class BaiduSearch {
 			file.createNewFile();
 		}
 		String surl = search.getSearchURL();
-//		String surl = search.getALLSearchURL()[1];
 		BaiduPage page = new BaiduPage(surl);
 		List<String> directoryLinks = page.getDirectoryLink();
 //		// 通过目录页，迅速的找到每一个章节对应的目录

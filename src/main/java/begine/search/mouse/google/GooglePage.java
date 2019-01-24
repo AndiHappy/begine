@@ -34,7 +34,7 @@ public class GooglePage extends Page {
 
 	public GooglePage(String url) {
 		super(url);
-		anylise();
+//		anylise();
 	}
 
 	private void anylise() {
@@ -53,7 +53,6 @@ public class GooglePage extends Page {
 		
 		//首先分析的是link的情况
 		TreeMap<String,ContentPage> chaptersLink = new  TreeMap<String,ContentPage>();
-		
 		Elements elements = document.select("a");
 		int totlaLinks = elements.size();
 		log.info("total link size:{}",totlaLinks);

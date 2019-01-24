@@ -1,5 +1,7 @@
 package begine.search.mouse;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -12,6 +14,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.github.stuxuhai.jpinyin.PinyinFormat;
+import com.github.stuxuhai.jpinyin.PinyinHelper;
+
+import begine.search.mouse.baidu.BaiduSearch;
 
 /**
  * @author zhailz
@@ -191,4 +198,31 @@ public class DirectoryPage {
 		this.pages = pages;
 	}
 
+	public static void main(String[] args) throws IOException{
+		System.out.println("https://www.uukanshu.com/txt/85358/");
+		DirectoryPage content = new DirectoryPage("https://www.uukanshu.com/txt/85358/");
+		String pin = PinyinHelper.convertToPinyinString("zhtian", ",", PinyinFormat.WITHOUT_TONE);
+		String fileName = pin.replaceAll(",", "")+".txt";
+		File file = new File(fileName);
+		if (!file.exists()) {
+			file.createNewFile();
+		} else {
+			file.delete();
+			file.createNewFile();
+		}
+		
+		ALLConetentPage cs = content.caculateEveryChapterPage();
+		List<DPage> pages = cs.getPs();
+		if (!pages.isEmpty()) {
+			for (DPage p : pages) {
+				if (LoadThreadPoolUtil.waitLoadDoc(p, 10)) {
+					String title = p.getTitle() + "\n";
+					log.info("保存:{},url:{}", title, p.getDoc().baseUri());
+					FileUtil.instanct().saveValueToFile(file, title, true);
+					String content1 = p.getTextContent() + "\n";
+					FileUtil.instanct().saveValueToFile(file, content1, true);
+				}
+			}
+		}
+	}
 }
