@@ -49,6 +49,13 @@ public class BookSearchController {
 	public BResult test(@RequestParam(value = "name", defaultValue = "World") String name) {
 		return new BResult(0, name, name);
 	}
+	
+	@RequestMapping("/")
+	public ModelAndView index(@RequestParam(value = "name", defaultValue = "World") String name) {
+		ModelAndView view = new ModelAndView("index");
+		view.addObject("searchName", "searchValue" + Math.random() + " " + name);
+		return view;
+	}
 
 	@RequestMapping("/hello")
 	public ModelAndView greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
@@ -109,7 +116,7 @@ public class BookSearchController {
 		logger.info("loadbook,访问路径:{},目录页地址:{}", req.getRequestURI(), contenturl);
 		Page page = new Page(contenturl);
 		LoadThreadPoolUtil.waitLoadDoc(page, 30);
-		List<User> users = new ArrayList<>();
+		List<ChapterLink> users = new ArrayList<>();
 		// 首先分析的是link的情况
 		TreeMap<String, ContentPage> chaptersLink = new TreeMap<String, ContentPage>();
 		Elements elements = page.getDoc().select("a");
@@ -119,10 +126,10 @@ public class BookSearchController {
 			if (aTextArray != null) {
 				// chatpter match
 				if (chapterLink.matcher(aTextArray[0]).find()) {
-					User user = new User();
-					user.name = chatptera.text();
-					user.email = chatptera.absUrl("href");
-					users.add(user);
+					ChapterLink chapter = new ChapterLink();
+					chapter.name = chatptera.text();
+					chapter.link = chatptera.absUrl("href");
+					users.add(chapter);
 					chaptersLink.put(chatptera.absUrl("href"), new ContentPage(chatptera.text()));
 				}
 			}
@@ -150,10 +157,10 @@ public class BookSearchController {
 	}
 }
 
-class User {
+class ChapterLink {
 	public String id = UUID.randomUUID().toString();
 	public String name;
-	public String email;
+	public String link;
 	public String edit;
 	public String delete;
 

@@ -199,9 +199,9 @@ public class DirectoryPage {
 	}
 
 	public static void main(String[] args) throws IOException{
-		System.out.println("https://www.uukanshu.com/txt/85358/");
-		DirectoryPage content = new DirectoryPage("https://www.uukanshu.com/txt/85358/");
-		String pin = PinyinHelper.convertToPinyinString("zhtian", ",", PinyinFormat.WITHOUT_TONE);
+		System.out.println("https://www.sqsxs.com/book/114/114131/");
+		DirectoryPage content = new DirectoryPage("https://www.sqsxs.com/book/114/114131/");
+		String pin = PinyinHelper.convertToPinyinString("xueba", ",", PinyinFormat.WITHOUT_TONE);
 		String fileName = pin.replaceAll(",", "")+".txt";
 		File file = new File(fileName);
 		if (!file.exists()) {
