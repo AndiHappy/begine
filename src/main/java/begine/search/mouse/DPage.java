@@ -15,6 +15,10 @@ public class DPage extends Page {
 		setParent(parent);
 	}
 
+	public DPage(String url) {
+		super(url);
+	}
+
 	public String text() {
 		LoadThreadPoolUtil.waitLoadDoc(this,60);
 		return this.doc.text();
