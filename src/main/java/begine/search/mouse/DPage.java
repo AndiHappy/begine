@@ -1,5 +1,6 @@
 package begine.search.mouse;
 
+import org.apache.commons.lang3.StringUtils;
 
 public class DPage extends Page {
 
@@ -19,6 +20,10 @@ public class DPage extends Page {
 		super(url);
 	}
 
+	public boolean haaTitle() {
+		return StringUtils.isNoneBlank(title);
+	}
+	
 	public String text() {
 		LoadThreadPoolUtil.waitLoadDoc(this,60);
 		return this.doc.text();

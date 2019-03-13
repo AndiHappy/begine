@@ -4,10 +4,10 @@ import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.function.Consumer;
+import java.util.Random;
+import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.helper.StringUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -26,14 +26,22 @@ public class ALLConetentPage {
 
 	private static final Logger log = LoggerFactory.getLogger(ALLConetentPage.class);
 	private List<DPage> ps;
-	private ThreadPoolExecutor pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(20);
 	private PatternUtil p = PatternUtil.instanct();
 	public static String yingppattern = "yingp";
+	public static Random random = new  Random();
 
 	public ALLConetentPage(List<String> pages) {
 		List<DPage> ps = new ArrayList<DPage>();
 		for (String string : pages) {
 			ps.add(new DPage(string, null));
+		}
+		setPs(ps);
+	}
+
+	public ALLConetentPage(Set<String> pageslinks) {
+		List<DPage> ps = new ArrayList<DPage>();
+		for (String pagelink : pageslinks) {
+			ps.add(new DPage(pagelink, null));
 		}
 		setPs(ps);
 	}
@@ -54,6 +62,7 @@ public class ALLConetentPage {
 		str = nf.format(p3);
 		return str;
 	}
+	
 
 	public void iniContent(String pattern) {
 		if (ps != null && !ps.isEmpty()) {
@@ -69,21 +78,25 @@ public class ALLConetentPage {
 							Document dp = dPage.getDoc();
 							String url = dp.baseUri();
 							URL u = new URL(url);
-							String pattern1 = p.getHostSetting(u.getHost()).getChooseTitlePattern();
-							if (StringUtil.isBlank(pattern1)) {
-								Elements title = dp.select("title");
+							if(p.getHostSetting(u.getHost()) != null) {
+								String pattern1 = p.getHostSetting(u.getHost()).getChooseTitlePattern();
+								Element title = dp.select(pattern1).first();
 								String titleText = title.text();
 								log.info("title:{}", titleText);
 								dPage.setTitle(titleText);
-							} else {
-								Element title = dp.select(pattern1).first();
+							}else {
+								Elements title = dp.select("title");
 								String titleText = title.text();
 								log.info("title:{}", titleText);
 								dPage.setTitle(titleText);
 							}
 							
 							String html = null;
-							if (yingppattern.equals(pattern)) {
+							if(StringUtils.isNotBlank(pattern)) {
+								Elements content = dp.select(pattern);
+								html = content.toString();
+							}else {
+								html = findContentText(dp);
 								Elements html1 = dp.select("body");
 								Element body = html1.first();
 								html = body.toString();
@@ -91,10 +104,6 @@ public class ALLConetentPage {
 								int s = p.getHostStartIndex(u.getHost());
 								int e = p.getHostEndIndex(u.getHost());
 								html = html.substring(s, html.length() - e);
-//								System.out.println(html);
-							}else{
-								Elements content = dp.select(pattern);
-								html = content.toString();
 							}
 							
 							String firstCellHzDec = filter(html);
@@ -107,6 +116,18 @@ public class ALLConetentPage {
 				}
 			}
 		}
+	}
+
+	/**
+	 * 普通情况下，寻找网页的内容
+	 * */
+	private String findContentText(Document dp) {
+		Elements html1 = dp.select("div");
+		for (Element element : html1) {
+			Elements tmp = element.select(":first-child");
+			System.out.println(tmp.html());
+		}
+		return html1.text();
 	}
 
 	private void searchAllTextNodes(Node body, ArrayList<Node> textNodes) {
@@ -142,5 +163,7 @@ public class ALLConetentPage {
 				.replaceAll("bdshare();", "").replaceAll("www.x4399.com", "").replaceAll("wap.x4399.com", "").replaceAll("uservote();←→addbookcase();read4();", "").replaceAll("<[^>]+>", "");
 
 	}
+
+	
 
 }

@@ -5,10 +5,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.util.StringUtil;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -273,5 +277,36 @@ public class Util {
 		}
 		System.out.println(textContent.substring(i, ii));
 		System.out.println(textContent2.substring(j, jj));
+	}
+
+	/**
+	 * according to Document find Chapter Link by a tag
+	 * */
+	public Set<String> getChapterLinks(Document doc) {
+		TreeMap<String, String> tmp = new TreeMap<String, String>();
+		Elements alinks = doc.select("a");
+		if(alinks != null && !alinks.isEmpty()) {
+			for (Element element : alinks) {
+				String linkText = element.text();
+				if(FilterUtil.chapterLinkPattern.matcher(linkText).find())
+				{
+					tmp.put(element.absUrl("href"),"");
+				}
+			}
+		}
+		return tmp.keySet();
+	}
+
+	/**
+	 * calculate the content pattern
+	 * */
+	public void comparePattern(Elements html1, Elements html2) {
+		for (int i = 0; i < html1.size(); i++) {
+			Element index = html1.get(i);
+			Element index2 = html2.get(i);
+			System.out.println(index);
+			System.out.println(index2);
+		}
+		
 	}
 }

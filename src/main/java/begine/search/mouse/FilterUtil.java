@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
  *
  * @version 2018年8月23日 下午3:21:29
  * 
- * 过滤网址
  */
 public class FilterUtil {
 
@@ -19,7 +18,7 @@ public class FilterUtil {
     
     public static final Pattern googlePatterns =  Pattern.compile("https://www.google.com/{1}+[^\\s]*");
     
-    
+    public static final Pattern chapterLinkPattern = Pattern.compile("第[\\u4e00-\\u9fa50-9]+章|第[\\u4e00-\\u9fa50-9]+节");
     
 
 }

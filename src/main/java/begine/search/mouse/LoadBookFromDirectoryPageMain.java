@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -71,15 +73,13 @@ public class LoadBookFromDirectoryPageMain  {
 			DPage[] value = sort(pages);
 			for (DPage dPage : value) {
 				if (LoadThreadPoolUtil.waitLoadDoc(dPage, 3)) {
+					String chooseLinkPattern = null;
+					String chooseContentPattern = null;
+					String chooseTitlePattern = null;
+					HostSetting setting = null;
 					if (Util.getInstance().judgeIsRealDirectoryPage(dPage)) {
 						String host = dPage.getHost();
-						String chooseLinkPattern = null;
-						String chooseContentPattern = null;
-						String chooseTitlePattern = null;
-						HostSetting setting = null;
-						if (!pt.hasHost(host)) {
-							log.error("待处理域名:{}", host);
-						} else {
+						if (pt.hasHost(host)) {
 							setting = pt.getHostSetting(host);
 							chooseLinkPattern = setting.getChooseLinkPattern();
 							chooseContentPattern = setting.getChooseContentPattern();
@@ -89,6 +89,8 @@ public class LoadBookFromDirectoryPageMain  {
 
 						}
 					}
+					log.error("待处理域名:{}", dPage.getHost());
+					return findAndIniContent(dPage, chooseLinkPattern, chooseContentPattern,chooseTitlePattern);
 				}
 			}
 
@@ -120,48 +122,74 @@ public class LoadBookFromDirectoryPageMain  {
 	 * @return
 	 */
 	private ALLConetentPage findAndIniContent(DPage dPage, String chooseLinkPattern, String chooseContentPattern, String chooseTitlePattern) {
+		// get document set title 
 		Document doc = dPage.getDoc();
-		Elements titles = doc.select(chooseTitlePattern);
-		dPage.setTitle(titles.text());
-		List<String> everyPageLinks = findEveryPageTdClassL(doc, chooseLinkPattern);
-		ALLConetentPage content = new ALLConetentPage(everyPageLinks);
+		if(StringUtils.isNotBlank(chooseTitlePattern)) {
+			Elements titles = doc.select(chooseTitlePattern);
+			dPage.setTitle(titles.text());
+		}else {
+			// NONE TITLE PATTERN
+			Elements titles = doc.select("h1");
+			if(titles != null && !titles.isEmpty()) {
+				dPage.setTitle(titles.text());
+			}else {
+				log.warn("NONE TITLE:{}",dPage.getDoc().baseUri());
+			}
+		}
+		// find every page content
+//		List<String> everyPageLinks = findEveryPageTdClassL(doc, chooseLinkPattern);
+		
+		Set<String> pageslinks = comFindEveryPageLink(doc);
+		
+//		ALLConetentPage content = new ALLConetentPage(everyPageLinks);
+		
+		ALLConetentPage content = new ALLConetentPage(pageslinks);
+		
 		content.iniContent(chooseContentPattern);
+//		content.iniContent();
 		return content;
+	}
+
+	private Set<String> comFindEveryPageLink(Document doc) {
+		Set<String> pageslinks = Util.getInstance().getChapterLinks(doc);
+		return pageslinks;
 	}
 
 	private List<String> findEveryPageTdClassL(Document doc, String pattern) {
 		List<String> pages = new ArrayList<String>();
-		Elements elements = doc.select(pattern);
-		if (!elements.isEmpty()) {
-			Element[] elementsort = new Element[elements.size()] ;
-			for (int i = 0; i < elements.size(); i++) {
-				Element element = elements.get(i);
-				Elements j = element.select("a");
-				if (!j.isEmpty() && j.size() == 1) {
-					Element a = j.first();
-					elementsort[i] = a;
+		if(StringUtils.isNotBlank(pattern)) {
+			Elements elements = doc.select(pattern);
+			if (!elements.isEmpty()) {
+				Element[] elementsort = new Element[elements.size()] ;
+				for (int i = 0; i < elements.size(); i++) {
+					Element element = elements.get(i);
+					Elements j = element.select("a");
+					if (!j.isEmpty() && j.size() == 1) {
+						Element a = j.first();
+						elementsort[i] = a;
+					}
 				}
-			}
-			
-			boolean compare = false;
-			try {
-				Arrays.sort(elementsort, new ChapterElementCompare());
-				compare= true;
-			} catch (Exception e) {
-				log.info("对比章节目录出现错误:{}",e);
-			}
-			if(compare){
-				ArrayList<Element> chect = judgeChapterIsSequence(elementsort);
-				log.error("顺序检查:{}", chect);
-			}
-			
-			for (Element element : elementsort) {
-				if(element != null){
-					log.info("{}",element.text());
-					pages.add(element.absUrl("href"));
+				TreeMap<String, Element> map = new TreeMap<String, Element>();
+				boolean compare = false;
+				try {
+					Arrays.sort(elementsort, new ChapterElementCompare());
+					compare= true;
+				} catch (Exception e) {
+					log.error("对比章节目录出现错误:{}",e);
+				}
+				if(compare){
+					ArrayList<Element> chect = judgeChapterIsSequence(elementsort);
+					log.error("顺序检查:{}", chect);
+				}
+				
+				for (Element element : elementsort) {
+					if(element != null){
+						pages.add(element.absUrl("href"));
+					}
 				}
 			}
 		}
+		
 		return pages;
 	}
 
@@ -205,11 +233,12 @@ public class LoadBookFromDirectoryPageMain  {
 	}
 
 	public static void main(String[] args) throws IOException{
-		LoadBookFromDirectoryPageMain content = new LoadBookFromDirectoryPageMain("https://www.sqsxs.com/book/114/114131/");
+		String uri = "https://www.dhzw.org/book/253/253353/";
+		LoadBookFromDirectoryPageMain content = new LoadBookFromDirectoryPageMain(uri);
 		ALLConetentPage cs = content.caculateEveryChapterPage();
 		String title = content.getPages().get(0).getTitle();
 		if(StringUtils.isAllBlank(title)){
-			title = new Random().nextLong()+"";
+			title = Math.abs(new Random().nextLong())+"";
 		}
 		String pin = PinyinHelper.convertToPinyinString(title, ",", PinyinFormat.WITHOUT_TONE);
 		String fileName = pin.replaceAll(",", "")+".txt";
@@ -225,7 +254,7 @@ public class LoadBookFromDirectoryPageMain  {
 			for (DPage p : pages) {
 				if (LoadThreadPoolUtil.waitLoadDoc(p, 10)) {
 					 title = p.getTitle() + "\n";
-					log.info("保存:{},url:{}", title, p.getDoc().baseUri());
+					log.info(" \n 保存:{} ", title);
 					FileUtil.instanct().saveValueToFile(file, title, true);
 					String content1 = p.getTextContent() + "\n";
 					FileUtil.instanct().saveValueToFile(file, content1, true);

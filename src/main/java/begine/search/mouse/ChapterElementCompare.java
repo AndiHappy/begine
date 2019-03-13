@@ -59,8 +59,4 @@ public class ChapterElementCompare implements Comparator<Element> {
 			return 0;
 		}
 	}
-
-	//	public static void main(String[] args){
-	//		ChapterElementCompare compare = new ChapterElementCompare();
-	//	}
 }
