@@ -29,6 +29,7 @@ public class ALLConetentPage {
 	private PatternUtil p = PatternUtil.instanct();
 	public static String yingppattern = "yingp";
 	public static Random random = new  Random();
+	private String ronghyu = null;
 
 	public ALLConetentPage(List<String> pages) {
 		List<DPage> ps = new ArrayList<DPage>();
@@ -96,14 +97,11 @@ public class ALLConetentPage {
 								Elements content = dp.select(pattern);
 								html = content.toString();
 							}else {
-								html = findContentText(dp);
 								Elements html1 = dp.select("body");
 								Element body = html1.first();
 								html = body.toString();
 								html = deleteAllHTMLTag(html);
-								int s = p.getHostStartIndex(u.getHost());
-								int e = p.getHostEndIndex(u.getHost());
-								html = html.substring(s, html.length() - e);
+								html = deleteRongYuText(html);
 							}
 							
 							String firstCellHzDec = filter(html);
@@ -118,16 +116,20 @@ public class ALLConetentPage {
 		}
 	}
 
-	/**
-	 * 普通情况下，寻找网页的内容
-	 * */
-	private String findContentText(Document dp) {
-		Elements html1 = dp.select("div");
-		for (Element element : html1) {
-			Elements tmp = element.select(":first-child");
-			System.out.println(tmp.html());
+	private String deleteRongYuText(String html) {
+		if(getRonghyu() == null) {
+			this.setRonghyu(html);
 		}
-		return html1.text();
+		
+		char[] va = getRonghyu().toCharArray();
+		char[] ba = html.toCharArray();
+		for (int i = 0; i < va.length; i++) {
+			if(va[i] != ba[i]) {
+				System.out.println(va[i]);
+			}
+		}
+		
+		return null;
 	}
 
 	private void searchAllTextNodes(Node body, ArrayList<Node> textNodes) {
@@ -162,6 +164,14 @@ public class ALLConetentPage {
 		return html.replaceAll("高速文字首发 ", "").replace("(adsbygoogle = window.adsbygoogle || []).push({});", "").replaceAll("手机同步阅读", "").replaceAll("&nbsp;;", "").replaceAll("&nbsp;", "").replaceAll("readx();", "").replaceAll("ahref=", "").replaceAll("^\"http:.*;", "").replaceAll("read3();", "")
 				.replaceAll("bdshare();", "").replaceAll("www.x4399.com", "").replaceAll("wap.x4399.com", "").replaceAll("uservote();←→addbookcase();read4();", "").replaceAll("<[^>]+>", "");
 
+	}
+
+	public String getRonghyu() {
+		return ronghyu;
+	}
+
+	public void setRonghyu(String ronghyu) {
+		this.ronghyu = ronghyu;
 	}
 
 	
