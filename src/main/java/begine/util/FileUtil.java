@@ -1,4 +1,4 @@
-package begine.search.mouse;
+package begine.util;
 
 import java.io.File;
 import java.io.FileInputStream;

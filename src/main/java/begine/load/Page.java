@@ -2,6 +2,8 @@ package begine.load;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import begine.util.LoadCondition;
@@ -27,16 +29,19 @@ public class Page extends BasePage {
 	public void iniPageContent() {
 		if (LoadConditionPoolUtil.waitLoadDoc(this, 20)) {
 			Document doc = this.getDoc();
-			Element contentDiv = Util.getInstance().getContentDivHtmlElement(doc);
+			Node contentDiv = Util.getInstance().getContentDivHtmlElement(doc);
 			if (contentDiv != null) {
 				String divFilterString = Util.getInstance().filter(contentDiv.toString());
 				setContentText(divFilterString);
+				
 			} else {
 				throw new IllegalAccessError("NONE content div " + getUrl() + " BOOKTITLE !");
 			}
 		} else {
 			throw new IllegalAccessError("load " + getUrl() + " timeout");
 		}
+		
+		setHasinipage(true);
 	}
 
 	public void iniPageTitle() {
@@ -58,15 +63,13 @@ public class Page extends BasePage {
 
 		@Override
 		public boolean meetCondition() {
-			return this.page.hasinipage;
+			return this.page.contentText != null;
 		}
 
 	}
 
 	public String getContentText() {
-		
 		LoadConditionPoolUtil.waitLoadDoc(new PageHasLoad(this), 20);
-
 		return contentText;
 
 	}
@@ -89,6 +92,23 @@ public class Page extends BasePage {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	
+	public static void main(String[] args) {
+		// select no div content
+		/*
+		Page pa = new Page("https://www.ptwxz.com/html/6/6035/3314738.html");
+		pa.iniPageTitle();
+		pa.iniPageContent();
+		System.out.println(pa.getTitle());
+		System.out.println(pa.getContentText());
+		*/
+		
+		Page pa = new Page("https://www.x23us.com/html/72/72784/32647450.html");
+		pa.iniPageTitle();
+		pa.iniPageContent();
+		System.out.println(pa.getTitle());
+		System.out.println(pa.getContentText());
 	}
 
 }

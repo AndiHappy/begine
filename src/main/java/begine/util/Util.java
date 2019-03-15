@@ -1,25 +1,20 @@
 package begine.util;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.util.StringUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import begine.search.mouse.DPage;
-import begine.search.mouse.LoadThreadPoolUtil;
-import begine.search.mouse.PatternUtil;
 
 /**
  * @author zhailz
@@ -29,8 +24,6 @@ import begine.search.mouse.PatternUtil;
 public class Util {
 	private static Logger log = LoggerFactory.getLogger(Util.class);
 	private static final HashMap<Character, Integer> array = new HashMap<Character, Integer>();
-	private PatternUtil pt = PatternUtil.instanct();
-	
 
 	private Util() {
 		ini();
@@ -68,34 +61,6 @@ public class Util {
 //				.replaceAll("uservote();←→addbookcase();read4();", "")
 				;
 
-	}
-
-	/**
-	 * 根据具体的站来进行判断，比较的low，但是也算是一个比较笨的方法
-	 */
-	public boolean judgeIsRealDirectoryPage(DPage dPage) {
-		if (LoadThreadPoolUtil.waitLoadDoc(dPage, 1)) {
-			String value = dPage.getDoc().baseUri();
-			if (value.startsWith("https://m.biquge.info") || value.startsWith("https://baike.baidu.com") || value.startsWith("http://www.tadu.com") || value.startsWith("http://www.sodu.cc") || value.startsWith("https://m.qidian.com")
-					|| value.startsWith("http://www.shuyue.cc") || value.startsWith("http://www.lkong.net/")) {
-				return false;
-			}
-			try {
-				URL url = new URL(value);
-				String host = url.getHost();
-				if (pt.hasHost(host)) {
-					return true;
-				} else {
-					log.error("\n\n\n \t!!! 处理域名:{} !!!\t\n\n\n", value);
-					return false;
-				}
-
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			log.info("baseURL:{}", value);
-		}
-		return false;
 	}
 	
 	public  int getElementNumber(Element o1) {
@@ -335,15 +300,34 @@ public class Util {
 	 * according to Document find Content Div
 	 * @return 
 	 * */
-	public Element getContentDivHtmlElement(Document doc) {
+	public Node getContentDivHtmlElement(Document doc) {
 		Elements content = doc.select("div[id=\"content\"]");
 		if(content == null || content.isEmpty()) {
 			content = doc.select("div[id=\"booktext\"]");
 		}
 		
+		//情况： https://www.x23us.com/html/72/72784/32647450.html
+		if(content == null || content.isEmpty()) {
+			content = doc.select("dd[id=contents]");
+		}
+		
 		if(content != null && !content.isEmpty()) {
 			return content.get(0);
 		}
+		
+		//情况：https://www.ptwxz.com/html/6/6035/3314738.html
+		if(content == null || content.isEmpty()) {
+			content = doc.select("body");
+			StringBuilder builder = new StringBuilder();
+			for (Node element : content.get(0).childNodes()) {
+				if(element instanceof TextNode && StringUtils.isNoneBlank(((TextNode) element).text())) {
+					builder.append(((TextNode) element).text() + "\n\n");
+				}
+			}
+			return new TextNode(builder.toString(), doc.baseUri());
+		}
+		
+		
 		
 		return null;
 	}

@@ -2,10 +2,8 @@ package begine.load;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -14,7 +12,8 @@ import org.slf4j.LoggerFactory;
 import com.github.stuxuhai.jpinyin.PinyinFormat;
 import com.github.stuxuhai.jpinyin.PinyinHelper;
 
-import begine.search.mouse.FileUtil;
+import begine.util.FileUtil;
+
 
 /**
  * load book from content page URL
@@ -60,7 +59,7 @@ public class LoadBookByContentPageURL {
 	}
 
 	public static void main(String[] args) {
-		String utl = "http://www.pfwx.com/wozhenbushishenxian/";
+		String utl = "https://www.x23us.com/html/72/72784/";
 		LoadBookByContentPageURL test = new LoadBookByContentPageURL(utl);
 		List<String> pages = test.page.getPagesLinks();
 		for (String string : pages) {
