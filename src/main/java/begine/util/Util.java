@@ -1,8 +1,9 @@
-package begine.search.mouse;
+package begine.util;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -15,6 +16,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import begine.search.mouse.DPage;
+import begine.search.mouse.LoadThreadPoolUtil;
+import begine.search.mouse.PatternUtil;
 
 /**
  * @author zhailz
@@ -39,9 +44,29 @@ public class Util {
 		return UtilHolder.instance;
 	}
 	
-	public static String filter(String html) {
-		return html.replaceAll("高速文字首发 ", "").replaceAll("手机同步阅读", "").replaceAll("&nbsp;;", "").replaceAll("&nbsp;", "").replaceAll("readx();", "").replaceAll("ahref=", "").replaceAll("^\"http:.*;", "").replaceAll("read3();", "")
-				.replaceAll("bdshare();", "").replaceAll("www.x4399.com", "").replaceAll("wap.x4399.com", "").replaceAll("uservote();←→addbookcase();read4();", "").replaceAll("<[^>]+>", "");
+	public String filterTitle(String titleDiv) {
+		return titleDiv.replaceAll("_.*", "")
+				.replaceAll("-.*", "")
+//				.replaceAll("&nbsp;", "")
+				
+				;
+	}
+	
+	public  String filter(String html) {
+		return html.replaceAll("<[^>]+>", "")
+				.replaceAll("&nbsp;;", "")
+				.replaceAll("&nbsp;", "")
+				.replaceAll(".*请把本站网址推荐给您的朋友吧.*", "")
+				.replaceAll(".*求票.*", "")
+//				.replaceAll("readx();", "")
+//				.replaceAll("ahref=", "")
+//				.replaceAll("^\"http:.*;", "")
+//				.replaceAll("read3();", "")
+//				.replaceAll("bdshare();", "")
+//				.replaceAll("www.x4399.com", "")
+//				.replaceAll("wap.x4399.com", "")
+//				.replaceAll("uservote();←→addbookcase();read4();", "")
+				;
 
 	}
 
@@ -73,7 +98,7 @@ public class Util {
 		return false;
 	}
 	
-	public static int getElementNumber(Element o1) {
+	public  int getElementNumber(Element o1) {
 		String value1 = o1.text();
 		List<Integer> res = indexofAll(value1, "第");
 		List<Integer> res3 = indexofAll(value1, "节");
@@ -93,12 +118,12 @@ public class Util {
 		return 0;
 	}
 	
-	private static int getFirstIndex(List<Integer> res, Integer integer) {
+	private  int getFirstIndex(List<Integer> res, Integer integer) {
 		int value = res.size()-1;
 		while(res.get(value) > integer) value--;
 		return res.get(value);
 	}
-	public static List<Integer> indexofAll(String des,String s){
+	public  List<Integer> indexofAll(String des,String s){
 		List<Integer> value = new ArrayList<Integer>();
 		if(StringUtils.isAnyBlank(des,s) || des.indexOf(s) == -1){
 			return value;
@@ -160,18 +185,25 @@ public class Util {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println(Util.convertChineseToNum("二"));
-		System.out.println(Util.convertChineseToNum("十"));
-		System.out.println(Util.convertChineseToNum("十二"));
-		System.out.println(Util.convertChineseToNum("二十二"));
-		System.out.println(Util.convertChineseToNum("三十"));
-		System.out.println(Util.convertChineseToNum("二百零二"));
-		System.out.println(Util.convertChineseToNum("二百二十二"));
-		System.out.println(Util.convertChineseToNum("五百三十二"));
-		System.out.println(Util.convertChineseToNum("一千五百三十二"));
-		System.out.println(Util.convertChineseToNum("一千零二"));
-		System.out.println(Util.convertChineseToNum("一万一千零二十二"));
-		System.out.println(Util.convertChineseToNum("一万零一十二"));
+//		System.out.println(Util.convertChineseToNum("二"));
+//		System.out.println(Util.convertChineseToNum("十"));
+//		System.out.println(Util.convertChineseToNum("十二"));
+//		System.out.println(Util.convertChineseToNum("二十二"));
+//		System.out.println(Util.convertChineseToNum("三十"));
+//		System.out.println(Util.convertChineseToNum("二百零二"));
+//		System.out.println(Util.convertChineseToNum("二百二十二"));
+//		System.out.println(Util.convertChineseToNum("五百三十二"));
+//		System.out.println(Util.convertChineseToNum("一千五百三十二"));
+//		System.out.println(Util.convertChineseToNum("一千零二"));
+//		System.out.println(Util.convertChineseToNum("一万一千零二十二"));
+//		System.out.println(Util.convertChineseToNum("一万零一十二"));
+		
+		String value = "<!--over-->\n" + 
+				" <br>\n" + 
+				" <br>★★\n" + 
+				" <a href=\"http://www.pfwx.com/\">平凡文学</a>★★ 如果觉得\n" + 
+				" <a href=\"http://www.pfwx.com/wozhenbushishenxian/\">我真不是神仙</a>好看，请把本站网址推荐给您的朋友吧！ \n";
+		System.out.println(Util.getInstance().filter(value));
 
 	}
 
@@ -282,21 +314,40 @@ public class Util {
 	/**
 	 * according to Document find Chapter Link by a tag
 	 * */
-	public Set<String> getChapterLinks(Document doc) {
-		TreeMap<String, String> tmp = new TreeMap<String, String>();
+	public List<String> getChapterLinks(Document doc) {
+		
+		List<String> tmp = new ArrayList<String>();
 		Elements alinks = doc.select("a");
 		if(alinks != null && !alinks.isEmpty()) {
 			for (Element element : alinks) {
 				String linkText = element.text();
-				if(FilterUtil.chapterLinkPattern.matcher(linkText).find())
+				if(ConfigUtil.chapterLinkPattern.matcher(linkText).find())
 				{
-					tmp.put(element.absUrl("href"),"");
+					tmp.add(element.absUrl("href"));
 				}
 			}
 		}
-		return tmp.keySet();
+		Collections.sort(tmp);
+		return tmp;
 	}
 
+	/**
+	 * according to Document find Content Div
+	 * @return 
+	 * */
+	public Element getContentDivHtmlElement(Document doc) {
+		Elements content = doc.select("div[id=\"content\"]");
+		if(content == null || content.isEmpty()) {
+			content = doc.select("div[id=\"booktext\"]");
+		}
+		
+		if(content != null && !content.isEmpty()) {
+			return content.get(0);
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * calculate the content pattern
 	 * */
@@ -309,4 +360,15 @@ public class Util {
 		}
 		
 	}
+
+	public Element getTitleDiv(Document doc) {
+		Elements title = doc.select("title");
+		if(title != null && !title.isEmpty()) {
+			return title.get(0);
+		}
+		return null;
+	}
+
+	
+	
 }

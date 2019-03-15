@@ -57,5 +57,4 @@ public class DPage extends Page {
 	public String toString() {
 		return "DPage [url=" + url + "]";
 	}
-	
 }

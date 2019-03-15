@@ -22,6 +22,8 @@ import org.slf4j.LoggerFactory;
 import com.github.stuxuhai.jpinyin.PinyinFormat;
 import com.github.stuxuhai.jpinyin.PinyinHelper;
 
+import begine.util.Util;
+
 /**
  * @author zhailz
  *
@@ -139,7 +141,7 @@ public class LoadBookFromDirectoryPageMain  {
 		// find every page content
 //		List<String> everyPageLinks = findEveryPageTdClassL(doc, chooseLinkPattern);
 		
-		Set<String> pageslinks = comFindEveryPageLink(doc);
+		List<String> pageslinks = comFindEveryPageLink(doc);
 		
 //		ALLConetentPage content = new ALLConetentPage(everyPageLinks);
 		
@@ -150,8 +152,8 @@ public class LoadBookFromDirectoryPageMain  {
 		return content;
 	}
 
-	private Set<String> comFindEveryPageLink(Document doc) {
-		Set<String> pageslinks = Util.getInstance().getChapterLinks(doc);
+	private List<String> comFindEveryPageLink(Document doc) {
+		List<String> pageslinks = Util.getInstance().getChapterLinks(doc);
 		return pageslinks;
 	}
 
@@ -198,8 +200,8 @@ public class LoadBookFromDirectoryPageMain  {
 		ArrayList<Element> value = new ArrayList<>();
 		for (int i = 1; i < elementsort.length; i++) {
 			if(elementsort[i-1] != null && elementsort[i] != null){
-				int ind1 = Util.getElementNumber(elementsort[i-1]);
-				int ind2 =Util.getElementNumber(elementsort[i]);
+				int ind1 = Util.getInstance().getElementNumber(elementsort[i-1]);
+				int ind2 =Util.getInstance().getElementNumber(elementsort[i]);
 				if(ind1 + 1 != ind2){
 					String urlindex1 = elementsort[i-1].absUrl("href");
 					int urlindexb = urlindex1.lastIndexOf("/");
@@ -233,7 +235,7 @@ public class LoadBookFromDirectoryPageMain  {
 	}
 
 	public static void main(String[] args) throws IOException{
-		String uri = "https://www.dhzw.org/book/253/253353/";
+		String uri = "http://www.xsdoo.com/xiaoshuo/191/191762/";
 		LoadBookFromDirectoryPageMain content = new LoadBookFromDirectoryPageMain(uri);
 		ALLConetentPage cs = content.caculateEveryChapterPage();
 		String title = content.getPages().get(0).getTitle();

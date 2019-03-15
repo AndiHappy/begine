@@ -19,6 +19,7 @@ import com.github.stuxuhai.jpinyin.PinyinFormat;
 import com.github.stuxuhai.jpinyin.PinyinHelper;
 
 import begine.search.mouse.baidu.BaiduSearch;
+import begine.util.Util;
 
 /**
  * @author zhailz
@@ -164,8 +165,8 @@ public class DirectoryPage {
 		ArrayList<Element> value = new ArrayList<>();
 		for (int i = 1; i < elementsort.length; i++) {
 			if(elementsort[i-1] != null && elementsort[i] != null){
-				int ind1 = Util.getElementNumber(elementsort[i-1]);
-				int ind2 =Util.getElementNumber(elementsort[i]);
+				int ind1 = Util.getInstance().getElementNumber(elementsort[i-1]);
+				int ind2 =Util.getInstance().getElementNumber(elementsort[i]);
 				if(ind1 + 1 != ind2){
 					String urlindex1 = elementsort[i-1].absUrl("href");
 					int urlindexb = urlindex1.lastIndexOf("/");

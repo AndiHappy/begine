@@ -3,6 +3,8 @@ package begine.search.mouse;
 import java.util.ArrayList;
 import java.util.List;
 
+import begine.util.Util;
+
 public class UpdateHostSetting extends Thread {
 
 	private List<DPage> pages;

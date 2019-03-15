@@ -7,6 +7,8 @@ import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import begine.util.Util;
+
 public class ContentPage {
 
 	private String title;
@@ -22,7 +24,7 @@ public class ContentPage {
 			logger.error("doc:{} can not found content!", doc.baseUri());
 		}
 
-		String content = Util.filter(nodes.get(0).html());
+		String content = Util.getInstance().filter(nodes.get(0).html());
 		this.setContent(content);
 	}
 

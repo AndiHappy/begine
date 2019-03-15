@@ -4,10 +4,11 @@ import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.function.Consumer;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jsoup.helper.StringUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -26,10 +27,9 @@ public class ALLConetentPage {
 
 	private static final Logger log = LoggerFactory.getLogger(ALLConetentPage.class);
 	private List<DPage> ps;
+//	private ThreadPoolExecutor pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(20);
 	private PatternUtil p = PatternUtil.instanct();
 	public static String yingppattern = "yingp";
-	public static Random random = new  Random();
-	private String ronghyu = null;
 
 	public ALLConetentPage(List<String> pages) {
 		List<DPage> ps = new ArrayList<DPage>();
@@ -63,7 +63,6 @@ public class ALLConetentPage {
 		str = nf.format(p3);
 		return str;
 	}
-	
 
 	public void iniContent(String pattern) {
 		if (ps != null && !ps.isEmpty()) {
@@ -79,6 +78,7 @@ public class ALLConetentPage {
 							Document dp = dPage.getDoc();
 							String url = dp.baseUri();
 							URL u = new URL(url);
+
 							if(p.getHostSetting(u.getHost()) != null) {
 								String pattern1 = p.getHostSetting(u.getHost()).getChooseTitlePattern();
 								Element title = dp.select(pattern1).first();
@@ -91,19 +91,24 @@ public class ALLConetentPage {
 								log.info("title:{}", titleText);
 								dPage.setTitle(titleText);
 							}
-							
+
+
 							String html = null;
-							if(StringUtils.isNotBlank(pattern)) {
-								Elements content = dp.select(pattern);
-								html = content.toString();
-							}else {
+							if (yingppattern.equals(pattern)) {
 								Elements html1 = dp.select("body");
 								Element body = html1.first();
 								html = body.toString();
 								html = deleteAllHTMLTag(html);
-								html = deleteRongYuText(html);
+								int s = p.getHostStartIndex(u.getHost());
+								int e = p.getHostEndIndex(u.getHost());
+								html = html.substring(s, html.length() - e);
+//								System.out.println(html);
+							}else{
+								Elements content = dp.select(pattern);
+								html = content.toString();
 							}
-							
+
+							// 至关重要的过滤html的toString留下的html的标签
 							String firstCellHzDec = filter(html);
 							dPage.setTextContent(firstCellHzDec);
 //							System.out.println(firstCellHzDec);
@@ -116,22 +121,6 @@ public class ALLConetentPage {
 		}
 	}
 
-	private String deleteRongYuText(String html) {
-		if(getRonghyu() == null) {
-			this.setRonghyu(html);
-		}
-		
-		char[] va = getRonghyu().toCharArray();
-		char[] ba = html.toCharArray();
-		for (int i = 0; i < va.length; i++) {
-			if(va[i] != ba[i]) {
-				System.out.println(va[i]);
-			}
-		}
-		
-		return null;
-	}
-
 	private void searchAllTextNodes(Node body, ArrayList<Node> textNodes) {
 		List<Node> nodes = body.childNodes();
 		if(nodes != null && nodes.size() > 0)
@@ -142,11 +131,11 @@ public class ALLConetentPage {
 					System.out.println(node.toString());
 				}
 			}
-			
+
 			if(node.childNodes() != null && node.childNodes().size() > 0){
 				searchAllTextNodes(node, textNodes);
 			}
-		}   
+		}
 	}
 
 	public static String deleteAllHTMLTag(String source) {
@@ -161,19 +150,9 @@ public class ALLConetentPage {
 		  return s;
 		}
 	private String filter(String html) {
-		return html.replaceAll("高速文字首发 ", "").replace("(adsbygoogle = window.adsbygoogle || []).push({});", "").replaceAll("手机同步阅读", "").replaceAll("&nbsp;;", "").replaceAll("&nbsp;", "").replaceAll("readx();", "").replaceAll("ahref=", "").replaceAll("^\"http:.*;", "").replaceAll("read3();", "")
-				.replaceAll("bdshare();", "").replaceAll("www.x4399.com", "").replaceAll("wap.x4399.com", "").replaceAll("uservote();←→addbookcase();read4();", "").replaceAll("<[^>]+>", "");
+		return html.replaceAll("<[^>]+>", "").replaceAll("高速文字首发 ", "").replace("(adsbygoogle = window.adsbygoogle || []).push({});", "").replaceAll("手机同步阅读", "").replaceAll("&nbsp;;", "").replaceAll("&nbsp;", "").replaceAll("readx();", "").replaceAll("ahref=", "").replaceAll("^\"http:.*;", "").replaceAll("read3();", "")
+				.replaceAll("bdshare();", "").replaceAll("www.x4399.com", "").replaceAll("wap.x4399.com", "").replaceAll("uservote();←→addbookcase();read4();", "");
 
 	}
-
-	public String getRonghyu() {
-		return ronghyu;
-	}
-
-	public void setRonghyu(String ronghyu) {
-		this.ronghyu = ronghyu;
-	}
-
-	
 
 }

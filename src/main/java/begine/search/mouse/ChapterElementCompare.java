@@ -6,6 +6,8 @@ import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import begine.util.Util;
+
 public class ChapterElementCompare implements Comparator<Element> {
 
 	public static final Logger log = LoggerFactory.getLogger(ChapterElementCompare.class);
@@ -14,8 +16,8 @@ public class ChapterElementCompare implements Comparator<Element> {
 	@Override
 	public int compare(Element o1, Element o2) {
 		if (o1 != null && o2 != null) {
-			int int1 = Util.getElementNumber(o1);
-			int int2 = Util.getElementNumber(o2);
+			int int1 = Util.getInstance().getElementNumber(o1);
+			int int2 = Util.getInstance().getElementNumber(o2);
 			String optional1 = o1.absUrl("href");
 			String optional2 = o2.absUrl("href");
 
