@@ -14,6 +14,7 @@ import com.github.stuxuhai.jpinyin.PinyinHelper;
 
 import begine.util.ConfigUtil;
 import begine.util.FileUtil;
+import begine.util.Util;
 
 
 /**
@@ -46,6 +47,7 @@ public class LoadBookByContentPageURL {
 		}
 		String pin = PinyinHelper.convertToPinyinString(title, ",", PinyinFormat.WITHOUT_TONE);
 		String fileName = ConfigUtil.fileStorePath+pin.replaceAll(",", "") + ".txt";
+		Util.ensureSpace();
 		File file = new File(fileName);
 		setFileName(fileName);
 		if (file.exists()) {

@@ -1,7 +1,10 @@
 package begine.util;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -146,32 +149,7 @@ public class Util {
 		return res;
 	}
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-//		System.out.println(Util.convertChineseToNum("二"));
-//		System.out.println(Util.convertChineseToNum("十"));
-//		System.out.println(Util.convertChineseToNum("十二"));
-//		System.out.println(Util.convertChineseToNum("二十二"));
-//		System.out.println(Util.convertChineseToNum("三十"));
-//		System.out.println(Util.convertChineseToNum("二百零二"));
-//		System.out.println(Util.convertChineseToNum("二百二十二"));
-//		System.out.println(Util.convertChineseToNum("五百三十二"));
-//		System.out.println(Util.convertChineseToNum("一千五百三十二"));
-//		System.out.println(Util.convertChineseToNum("一千零二"));
-//		System.out.println(Util.convertChineseToNum("一万一千零二十二"));
-//		System.out.println(Util.convertChineseToNum("一万零一十二"));
-		
-		String value = "<!--over-->\n" + 
-				" <br>\n" + 
-				" <br>★★\n" + 
-				" <a href=\"http://www.pfwx.com/\">平凡文学</a>★★ 如果觉得\n" + 
-				" <a href=\"http://www.pfwx.com/wozhenbushishenxian/\">我真不是神仙</a>好看，请把本站网址推荐给您的朋友吧！ \n";
-		System.out.println(Util.getInstance().filter(value));
-
-	}
-
+	
 	public static boolean canConvert(String value) {
 		if (StringUtil.isNotBlank(value)) {
 			for (char ch : value.toCharArray()) {
@@ -353,6 +331,71 @@ public class Util {
 		return null;
 	}
 
+	/**
+	 * 文件的大小
+	 * */
+	public static long getDirSize(File file) {     
+        //判断文件是否存在     
+        if (file.exists()) {     
+            //如果是目录则递归计算其内容的总大小    
+            if (file.isDirectory()) {     
+                File[] children = file.listFiles();     
+                long size = 0;     
+                for (File f : children)     
+                    size += getDirSize(f);     
+                return size;     
+            } else {//如果是文件则直接返回其大小,以“兆”为单位   
+                return file.length();  
+            }     
+        } else {     
+        	log.info("文件或者文件夹:{} 不存在，请检查路径是否正确！",file.getAbsolutePath());     
+            return 0L;     
+        }     
+    }
+
+	public static void ensureSpace() {
+		File file = new File(ConfigUtil.fileStorePath);
+		long tmpsize = getDirSize(file);
+		if(tmpsize <= ConfigUtil.fileStoreMaxSizePath) {
+			File[] children = file.listFiles();  
+			Arrays.parallelSort(children, new Comparator<File>() {
+				@Override
+				public int compare(File o1, File o2) {
+					return (int) (o1.lastModified() - o2.lastModified());
+				}
+			});
+			children[0].delete();
+			children[1].delete();
+			ensureSpace();
+		}
+		return;
+	}
 	
-	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		Util.getInstance().ensureSpace();
+//		System.out.println(Util.convertChineseToNum("二"));
+//		System.out.println(Util.convertChineseToNum("十"));
+//		System.out.println(Util.convertChineseToNum("十二"));
+//		System.out.println(Util.convertChineseToNum("二十二"));
+//		System.out.println(Util.convertChineseToNum("三十"));
+//		System.out.println(Util.convertChineseToNum("二百零二"));
+//		System.out.println(Util.convertChineseToNum("二百二十二"));
+//		System.out.println(Util.convertChineseToNum("五百三十二"));
+//		System.out.println(Util.convertChineseToNum("一千五百三十二"));
+//		System.out.println(Util.convertChineseToNum("一千零二"));
+//		System.out.println(Util.convertChineseToNum("一万一千零二十二"));
+//		System.out.println(Util.convertChineseToNum("一万零一十二"));
+		
+//		String value = "<!--over-->\n" + 
+//				" <br>\n" + 
+//				" <br>★★\n" + 
+//				" <a href=\"http://www.pfwx.com/\">平凡文学</a>★★ 如果觉得\n" + 
+//				" <a href=\"http://www.pfwx.com/wozhenbushishenxian/\">我真不是神仙</a>好看，请把本站网址推荐给您的朋友吧！ \n";
+//		System.out.println(Util.getInstance().filter(value));
+
+	}
+
 }

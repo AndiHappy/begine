@@ -21,5 +21,7 @@ public class ConfigUtil {
     public static final Pattern chapterLinkPattern = Pattern.compile("第[\\u4e00-\\u9fa50-9〇]+章|第[\\u4e00-\\u9fa50-9〇]+节|[0-9]\\d{0,5} ");
     
     public static final String fileStorePath = "/bookstore/";
+    
+    public static final long fileStoreMaxSizePath = 1024*1024*1024L;
 
 }
