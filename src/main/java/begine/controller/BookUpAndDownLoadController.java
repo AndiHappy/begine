@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import begine.util.ConfigUtil;
+
 /**
  * @author zhailz
  *
@@ -68,7 +70,7 @@ public class BookUpAndDownLoadController {
 		response.setContentType("application/octet-stream");
 		FileInputStream fis = null;
 		try {
-			File file = new File(fName);
+			File file = new File(ConfigUtil.fileStorePath+fName);
 			fis = new FileInputStream(file);
 			response.setHeader("Content-Disposition", "attachment; filename=" + file.getName());
 			IOUtils.copy(fis, response.getOutputStream());

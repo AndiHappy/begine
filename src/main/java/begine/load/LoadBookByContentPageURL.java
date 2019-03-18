@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.github.stuxuhai.jpinyin.PinyinFormat;
 import com.github.stuxuhai.jpinyin.PinyinHelper;
 
+import begine.util.ConfigUtil;
 import begine.util.FileUtil;
 
 
@@ -44,7 +45,7 @@ public class LoadBookByContentPageURL {
 			title = Math.abs(new Random().nextLong()) + "";
 		}
 		String pin = PinyinHelper.convertToPinyinString(title, ",", PinyinFormat.WITHOUT_TONE);
-		String fileName = pin.replaceAll(",", "") + ".txt";
+		String fileName = ConfigUtil.fileStorePath+pin.replaceAll(",", "") + ".txt";
 		File file = new File(fileName);
 		setFileName(fileName);
 		if (file.exists()) {
