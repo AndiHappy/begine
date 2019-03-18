@@ -2,6 +2,8 @@ package begine.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Date;
+import java.util.WeakHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import begine.load.LoadBookByContentPageURL;
 import begine.util.BResult;
+import begine.util.TimeFormat;
 
 /**
  * @author zhailz
@@ -26,8 +29,8 @@ public class BookController {
 
 	private static Logger logger = LoggerFactory.getLogger(BookController.class);
 
-	private static String afterSearchWorld = " 目录";
-
+	private WeakHashMap<String, String> cache = new WeakHashMap<String, String>(200); 
+	
 	@RequestMapping("/state")
 	public BResult test(@RequestParam(value = "name", defaultValue = "World") String name) {
 		return new BResult(0, name, name);
@@ -42,14 +45,22 @@ public class BookController {
 
 	@RequestMapping("/hello")
 	public ModelAndView greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
-		ModelAndView view = new ModelAndView("hello");
+		ModelAndView view = new ModelAndView("index");
 		view.addObject("searchName", "searchValue" + Math.random() + " " + name);
 		return view;
 	}
 
+	/***
+	 * cache url
+	 * */
 	@RequestMapping("/loadbyurl")
 	public BResult search(HttpServletRequest req, @RequestParam(value = "url", required = true) String url) throws Exception {
 		logger.info("visit:{},{},loadbyurl:{}",req.getRequestURL().toString(), req.getRequestURI(), url);
+		String time = TimeFormat.getFormatDate(new Date(), TimeFormat.TIME_FORMAT_D);
+		if(cache.get(url+time) != null) {
+			return new BResult(0, cache.get(url), "success");
+		}
+		
 		String fullURL = req.getRequestURL().toString();
 		URL geturl = new URL(fullURL);
 		logger.info("host:{},pro:{},port:{},path:{}",geturl.getHost(),geturl.getProtocol(),geturl.getPort(),geturl.getPath());
@@ -60,6 +71,7 @@ public class BookController {
 			return new BResult(-1, load.getFileName(), e.getMessage());
 		}
 		String loadURL = geturl.getProtocol()+"://"+geturl.getHost()+":"+geturl.getPort()+"/down?fName="+load.getFileName();
-		return new BResult(0, loadURL, "error");
+		cache.put(url+time, loadURL);
+		return new BResult(0, loadURL, "success");
 	}
 }
