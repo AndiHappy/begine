@@ -25,12 +25,15 @@ public class LoadBookByContentPageURL {
 	private static Logger log = LoggerFactory.getLogger(LoadBookByContentPageURL.class);
 	
 	private ContentPage page = null;
+	
+	//文件名称
+	private String fileName = null;
 
 	public LoadBookByContentPageURL(String contenturl) {
 		setPage(new ContentPage(contenturl));
 	}
 
-	public void loadBookToFile() throws IOException {
+	public boolean loadBookToFile() throws IOException {
 		if (page == null || page.getPages() == null || page.getPages().isEmpty()) {
 			throw new IllegalAccessError("NONE PAGES FOUND");
 		}
@@ -43,6 +46,7 @@ public class LoadBookByContentPageURL {
 		String pin = PinyinHelper.convertToPinyinString(title, ",", PinyinFormat.WITHOUT_TONE);
 		String fileName = pin.replaceAll(",", "") + ".txt";
 		File file = new File(fileName);
+		setFileName(fileName);
 		if (file.exists()) {
 			file.delete();
 		}
@@ -56,6 +60,7 @@ public class LoadBookByContentPageURL {
 			String content1 = p.getContentText() + " ";
 			FileUtil.instanct().saveValueToFile(file, content1, true);
 		}
+		return true;
 	}
 
 	public static void main(String[] args) {
@@ -79,6 +84,14 @@ public class LoadBookByContentPageURL {
 
 	public void setPage(ContentPage page) {
 		this.page = page;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 }
