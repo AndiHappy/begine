@@ -1,6 +1,8 @@
 package begine.controller;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -52,14 +54,18 @@ public class BookController {
 	}
 
 	@RequestMapping("/loadbyurl")
-	public BResult search(HttpServletRequest req, @RequestParam(value = "url", required = true) String url) {
-		logger.info("visit:{},loadbyurl:{}", req.getRequestURI(), url);
+	public BResult search(HttpServletRequest req, @RequestParam(value = "url", required = true) String url) throws Exception {
+		logger.info("visit:{},{},loadbyurl:{}",req.getRequestURL().toString(), req.getRequestURI(), url);
+		String fullURL = req.getRequestURL().toString();
+		URL geturl = new URL(fullURL);
+		logger.info("host:{},pro:{},port:{},path:{}",geturl.getHost(),geturl.getProtocol(),geturl.getPort(),geturl.getPath());
 		LoadBookByContentPageURL load = new LoadBookByContentPageURL(url);
 		try {
 			load.loadBookToFile();
 		} catch (IOException e) {
 			return new BResult(-1, load.getFileName(), e.getMessage());
 		}
-		return new BResult(0, load.getFileName(), "error");
+		String loadURL = geturl.getProtocol()+"://"+geturl.getHost()+":"+geturl.getPort()+"/down?fName="+load.getFileName();
+		return new BResult(0, loadURL, "error");
 	}
 }
