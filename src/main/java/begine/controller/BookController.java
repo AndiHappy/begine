@@ -9,12 +9,14 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import begine.load.LoadBookByContentPageURL;
+import begine.server.search.GoogleSearch;
 import begine.util.BResult;
 import begine.util.TimeFormat;
 
@@ -30,6 +32,9 @@ public class BookController {
 	private static Logger logger = LoggerFactory.getLogger(BookController.class);
 
 	private WeakHashMap<String, String> cache = new WeakHashMap<String, String>(200); 
+	
+	@Autowired
+	private GoogleSearch googleSearch;
 	
 	@RequestMapping("/state")
 	public BResult test(@RequestParam(value = "name", defaultValue = "World") String name) {
@@ -73,5 +78,18 @@ public class BookController {
 		String loadURL = geturl.getProtocol()+"://"+geturl.getHost()+":"+geturl.getPort()+"/down?fName="+load.getFileName();
 		cache.put(url+time, loadURL);
 		return new BResult(0, loadURL, "success");
+	}
+	
+	
+	/***
+	 * newest chapter
+	 * google search
+	 * */
+	@RequestMapping("/newchapter")
+	public BResult newchapter(HttpServletRequest req, 
+			@RequestParam(value = "name", required = true) String name) throws Exception {
+		logger.info("name:{} , requestURL:{} ",name, req.getRequestURI());
+		googleSearch.search(name);
+		return new BResult(0, "", "success");
 	}
 }

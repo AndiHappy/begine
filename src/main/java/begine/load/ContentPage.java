@@ -1,15 +1,14 @@
 package begine.load;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
-import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import begine.util.LoadConditionPoolUtil;
 import begine.util.Util;
@@ -19,6 +18,8 @@ import begine.util.Util;
  *
  */
 public class ContentPage extends BasePage {
+
+	private static Logger log = LoggerFactory.getLogger(ContentPage.class);
 
 	private List<Page> pages = null;
 
@@ -96,7 +97,9 @@ public class ContentPage extends BasePage {
 		if (getPagesLinks() == null) {
 			if (LoadConditionPoolUtil.waitLoadDoc(this, 20)) {
 				Document doc = this.getDoc();
-				setPagesLinks(Util.getInstance().getChapterLinks(doc));
+				List<String> pagelinks = Util.getInstance().getChapterLinks(doc);
+				log.info("calculate chapter num: {}", pagelinks.size());
+				setPagesLinks(pagelinks);
 			} else {
 				throw new IllegalAccessError("load " + getUrl() + " timeout");
 			}

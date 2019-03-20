@@ -56,7 +56,7 @@ public abstract class BasePage implements LoadCondition {
 		            String host = new URL(baseurl).getHost();
 		            setHost(host);
 		            setIni(true);
-		            log.info("load: {} ",url);
+//		            log.info("load: {} ",url);
 		          } catch (IOException e) {
 		            log.error("{},初始化出现错误：{}", url, e);
 		          }

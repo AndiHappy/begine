@@ -261,15 +261,21 @@ public class Util {
 		
 		List<String> tmp = new ArrayList<String>();
 		Elements alinks = doc.select("a");
+		int size = 0;
 		if(alinks != null && !alinks.isEmpty()) {
 			for (Element element : alinks) {
 				String linkText = element.text();
+				if(linkText.contains("800")) {
+					System.out.println(linkText);
+				}
 				if(ConfigUtil.chapterLinkPattern.matcher(linkText).find())
 				{
 					tmp.add(element.absUrl("href"));
+					size++;
 				}
 			}
 		}
+		System.out.println(size);
 		Collections.sort(tmp);
 		return tmp;
 	}
@@ -287,6 +293,11 @@ public class Util {
 		//情况： https://www.x23us.com/html/72/72784/32647450.html
 		if(content == null || content.isEmpty()) {
 			content = doc.select("dd[id=contents]");
+		}
+		
+		//情况：https://www.mkxs8.com/267/267529/57141436.html
+		if(content == null || content.isEmpty()) {
+			content = doc.select("div[id=\"text_area\"]");
 		}
 		
 		if(content != null && !content.isEmpty()) {
@@ -356,7 +367,7 @@ public class Util {
 	public static void ensureSpace() {
 		File file = new File(ConfigUtil.fileStorePath);
 		long tmpsize = getDirSize(file);
-		if(tmpsize <= ConfigUtil.fileStoreMaxSizePath) {
+		if(tmpsize >= ConfigUtil.fileStoreMaxSizePath) {
 			File[] children = file.listFiles();  
 			Arrays.parallelSort(children, new Comparator<File>() {
 				@Override
@@ -364,8 +375,12 @@ public class Util {
 					return (int) (o1.lastModified() - o2.lastModified());
 				}
 			});
-			children[0].delete();
-			children[1].delete();
+			
+			//ensure length
+			if(children.length > 0) {
+				children[0].delete();
+			}
+			
 			ensureSpace();
 		}
 		return;
