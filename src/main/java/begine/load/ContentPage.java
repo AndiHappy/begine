@@ -36,7 +36,7 @@ public class ContentPage extends BasePage {
 	}
 
 	public void iniBookTitle() {
-		if (LoadConditionPoolUtil.waitLoadDoc(this, 20)) {
+		if (LoadConditionPoolUtil.waitLoadDoc(this, 500)) {
 			Document doc = this.getDoc();
 			Elements titles = doc.select("h1");
 			if (titles != null && !titles.isEmpty()) {
@@ -59,9 +59,9 @@ public class ContentPage extends BasePage {
 			setPages(pages);
 
 			for (Page page : pages) {
-				LoadConditionPoolUtil.submit(new Runnable() {
-					@Override
-					public void run() {
+//				LoadConditionPoolUtil.submit(new Runnable() {
+//					@Override
+//					public void run() {
 						if (LoadConditionPoolUtil.waitLoadDoc(page, 20)) {
 							Document doc = page.getDoc();
 							Node contentDiv = Util.getInstance().getContentDivHtmlElement(doc);
@@ -86,8 +86,8 @@ public class ContentPage extends BasePage {
 							throw new IllegalAccessError("load " + getUrl() + " timeout");
 						}
 					}
-				});
-			}
+//				});
+//			}
 
 		}
 	}

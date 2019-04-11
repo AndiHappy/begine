@@ -67,7 +67,7 @@ public class LoadBookByContentPageURL {
 	}
 
 	public static void main(String[] args) {
-		String utl = "https://www.mkxs8.com/267/267529/";
+		String utl = "https://www.ptwxz.com/html/9/9932/";
 		LoadBookByContentPageURL test = new LoadBookByContentPageURL(utl);
 		List<String> pages = test.page.getPagesLinks();
 		for (String string : pages) {
@@ -76,7 +76,6 @@ public class LoadBookByContentPageURL {
 		try {
 			test.loadBookToFile();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

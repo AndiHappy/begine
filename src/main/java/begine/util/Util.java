@@ -54,6 +54,9 @@ public class Util {
 				.replaceAll("&nbsp;", "")
 				.replaceAll(".*请把本站网址推荐给您的朋友吧.*", "")
 				.replaceAll(".*求票.*", "")
+				.replaceAll(".*为了方便下次阅读.*", "")
+				.replace(".*阅读最新章节.*", "")
+				.replaceAll(".*手机用户请到.*", "")
 //				.replaceAll("readx();", "")
 //				.replaceAll("ahref=", "")
 //				.replaceAll("^\"http:.*;", "")
@@ -275,7 +278,6 @@ public class Util {
 				}
 			}
 		}
-		System.out.println(size);
 		Collections.sort(tmp);
 		return tmp;
 	}
@@ -390,7 +392,7 @@ public class Util {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Util.getInstance().ensureSpace();
+//		Util.getInstance().ensureSpace();
 //		System.out.println(Util.convertChineseToNum("二"));
 //		System.out.println(Util.convertChineseToNum("十"));
 //		System.out.println(Util.convertChineseToNum("十二"));
@@ -404,12 +406,17 @@ public class Util {
 //		System.out.println(Util.convertChineseToNum("一万一千零二十二"));
 //		System.out.println(Util.convertChineseToNum("一万零一十二"));
 		
-//		String value = "<!--over-->\n" + 
-//				" <br>\n" + 
-//				" <br>★★\n" + 
-//				" <a href=\"http://www.pfwx.com/\">平凡文学</a>★★ 如果觉得\n" + 
-//				" <a href=\"http://www.pfwx.com/wozhenbushishenxian/\">我真不是神仙</a>好看，请把本站网址推荐给您的朋友吧！ \n";
-//		System.out.println(Util.getInstance().filter(value));
+		String value = "<!--over-->\n" + 
+				" <br>\n" + 
+				" <br>★★\n" + 
+				" <a href=\"http://www.pfwx.com/\">平凡文学</a>★★ 如果觉得\n" + 
+				"手机用户请到\n" + 
+				" https://m.33zw.com/xiaoshuo/154621/阅读最新章节\n" + 
+				"\n" + 
+				" https://www.33zw.com/xiaoshuo/154621/，谢谢您的支持！！\n" + 
+				""+
+				" <a href=\"http://www.pfwx.com/wozhenbushishenxian/\">我真不是神仙</a>好看，请把本站网址推荐给您的朋友吧！ \n";
+		System.out.println(Util.getInstance().filter(value));
 
 	}
 
