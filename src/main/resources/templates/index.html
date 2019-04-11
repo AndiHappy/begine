@@ -1,35 +1,42 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<head>
- <title>begine-flybread</title>
-<link rel="stylesheet" type="text/css" href="css/index.css" />
-<link href="webjars/bootstrap/3.3.6/css/bootstrap.min.css"
-        rel="stylesheet">
-<script src="webjars/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<script src="webjars/jquery/1.9.1/jquery.min.js"></script>
-        
-</head>
-<body>
-<p> <span th:text="${searchName}"> </span></p>
-<br/>
-<br/>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>飞翔的面包</title>
+    <link href="/css/signin.css" rel="stylesheet">
+  </head>
+  <body class="text-center">
+  <form class="form-signin" >
+  <img class="mb-4" src="/pic/method-draw-image.svg" alt="" width="72" height="72">
+ <!--  <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1> -->
+  <label for="inputEmail" class="sr-only">Email address</label>
+  <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+  <label for="inputPassword" class="sr-only">Password</label>
+  <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+  <div class="checkbox mb-3">
+    <label>
+      <input type="checkbox" value="remember-me"> Remember me
+    </label>
+  </div>
+  <button class="btn btn-lg btn-primary btn-block" type="submit",onclick=login()>Sign in</button>
+  <p class="mt-5 mb-3 text-muted">© 2017-2019</p>
+</form>
 
-	<!-- <li>搜索小说</li> -->
-	<form method="get" action="/searchDirectory">
-		Search: <input type="text" name="name" value="" size="17"
-			autocorrect="off" spellcheck="false" autocapitalize="off"
-			autocomplete="false">
-	</form>
-
-	<!-- <li>搜索下载小说</li> -->
-	<form method="get" action="/search">
-		Search: <input type="text" name="name" value="" size="17"
-			autocorrect="off" spellcheck="false" autocapitalize="off"
-			autocomplete="false">
-	</form>
-</body>
-
+<script type="text/javascript">
+function login() {
+	alert("ddd");
+}
+</script>
+  
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
 </html>
