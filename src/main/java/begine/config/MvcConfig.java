@@ -50,7 +50,9 @@ public class MvcConfig implements WebMvcConfigurer {
 	public void addInterceptors(InterceptorRegistry registry) {
 		// addPathPatterns 用于添加拦截规则,excludePathPatterns 用户排除拦截
 		HandlerInterceptor interceptor = new LogInterceptorHandler();
-		registry.addInterceptor(interceptor).addPathPatterns("/up").addPathPatterns("/down");
+		registry.addInterceptor(interceptor).addPathPatterns("/up").addPathPatterns("/down")
+		// 资源文件
+		.excludePathPatterns("/assets/**", "/error/**", "favicon.ico", "/css/**", "/js/**", "/img/**","/pic/**");
 	}
 
 }
