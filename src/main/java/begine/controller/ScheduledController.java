@@ -22,7 +22,7 @@ public class ScheduledController {
     public void reportCurrentTime() {
     	File file = new File(ConfigUtil.fileStorePath);
     	long value = Util.getDirSize(file);
-    	logger.info("current:{}, long:{} , size:{} M ",dateFormat.format(new Date()),value,value/1024/1024);
+//    	logger.info("current:{}, long:{} , size:{} M ",dateFormat.format(new Date()),value,value/1024/1024);
     	Util.ensureSpace();
     }
 

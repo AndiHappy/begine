@@ -21,7 +21,7 @@ public class MethodExecutionCalculationAspect {
 	/**
 	 * Around 最好要把返回值返回
 	 * */
-	@Around("execution(* begine.controller.*Controller.*(..))")
+	@Around("execution(* begine.controller.*Controller.*(..)) && !execution(* begine.controller.ScheduledController.*(..))")
 	public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
 		long startTime = System.currentTimeMillis();
 

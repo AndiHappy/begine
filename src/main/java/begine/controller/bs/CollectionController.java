@@ -1,4 +1,4 @@
-package begine.controller.collection;
+package begine.controller.bs;
 
 import java.util.Enumeration;
 import java.util.Map;
@@ -8,9 +8,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import begine.server.log.BussinessLog;
 import begine.util.BResult;
 
 /**
@@ -19,17 +22,17 @@ import begine.util.BResult;
  * @version 2018年8月14日 下午5:07:13
  */
 
-//TODO 
-// 功能： 收集网络页面
-// 说明：类似网络的收藏页面，不过是可以打标签，可以写记录
 @RestController
+@RequestMapping("/passport")
 public class CollectionController {
 
 	private static Logger logger = LoggerFactory.getLogger(CollectionController.class);
 	
-	@RequestMapping("/collect")
-	public BResult test(HttpServletRequest request,HttpServletResponse response) {
-		//允许跨域名进行访问
+    @BussinessLog("[{1}] log in system")
+    @RequestMapping(value = "/signin")
+    @ResponseBody
+	public BResult submitLogin(HttpServletRequest request,HttpServletResponse response) {
+		        //允许跨域名进行访问
 				response.addHeader("Access-Control-Allow-Origin", "*");
 				logger.info("enter APIAuthorityInterceptor perHandle method...");
 				// web请求从cookies取登录用户信息 端请求按照端的方式取登录用户信息
