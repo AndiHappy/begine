@@ -42,7 +42,10 @@ public class ContentPage extends BasePage {
 			if (titles != null && !titles.isEmpty()) {
 				setBookTitle(titles.text());
 			} else {
-				throw new IllegalAccessError("NONE " + getUrl() + " BOOKTITLE !");
+				if(titles.isEmpty()) {
+					setBookTitle((long)Math.random()+"-00001");
+				}
+//				throw new IllegalAccessError("NONE " + getUrl() + " BOOKTITLE !");
 			}
 		} else {
 			throw new IllegalAccessError("load " + getUrl() + " timeout");

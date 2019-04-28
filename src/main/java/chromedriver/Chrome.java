@@ -18,9 +18,9 @@ public class Chrome {
 	public void testGoogleSearch() throws InterruptedException {
 		// Optional, if not specified, WebDriver will search your path for chromedriver.
 		ChromeDriver driver = new ChromeDriver();
-		driver.get("http://www.google.com/xhtml");
-		Thread.sleep(5000); // Let the user actually see something!
-		WebElement searchBox = driver.findElement(By.name("q"));
+		driver.get("https://www.fpzw.com/xiaoshuo/105/105098/");
+//		Thread.sleep(5000); // Let the user actually see something!
+		WebElement searchBox = driver.findElementByTagName("dd");
 		searchBox.sendKeys("ChromeDriver");
 		searchBox.submit();
 		Thread.sleep(5000); // Let the user actually see something!

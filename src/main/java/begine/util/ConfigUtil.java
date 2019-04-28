@@ -18,7 +18,7 @@ public class ConfigUtil {
     
     public static final Pattern googlePatterns =  Pattern.compile("https://www.google.com/{1}+[^\\s]*");
     
-    public static final Pattern chapterLinkPattern = Pattern.compile("第[\\u4e00-\\u9fa50-9〇]+章|第[\\u4e00-\\u9fa50-9〇]+节|[0-9]\\d{0,5} ");
+    public static final Pattern chapterLinkPattern = Pattern.compile("第[\\u4e00-\\u9fa50-9〇]+章|第[\\u4e00-\\u9fa50-9〇]+节|[0-9]\\d{0,5}");
     
     public static final String fileStorePath = "/bookstore/";
     

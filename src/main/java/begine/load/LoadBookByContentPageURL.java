@@ -61,13 +61,18 @@ public class LoadBookByContentPageURL {
 			log.info(" \n 保存:{}, {} ",p.getUrl(), titlestring);
 			FileUtil.instanct().saveValueToFile(file, titlestring, true);
 			String content1 = p.getContentText() + " ";
-			FileUtil.instanct().saveValueToFile(file, content1, true);
+			if(StringUtils.isNotEmpty(content1)) {
+				FileUtil.instanct().saveValueToFile(file, content1, true);
+			}else {
+				log.error(" \n 错误没有内容。 :{}, {} \n\n",p.getUrl(), titlestring);
+
+			}
 		}
 		return true;
 	}
 
 	public static void main(String[] args) {
-		String utl = "https://www.ptwxz.com/html/9/9932/";
+		String utl = "https://www.jjxs.la/read/26834/";
 		LoadBookByContentPageURL test = new LoadBookByContentPageURL(utl);
 		List<String> pages = test.page.getPagesLinks();
 		for (String string : pages) {

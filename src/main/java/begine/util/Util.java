@@ -18,7 +18,6 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * @author zhailz
  *
@@ -39,24 +38,18 @@ public class Util {
 	public static Util getInstance() {
 		return UtilHolder.instance;
 	}
-	
+
 	public String filterTitle(String titleDiv) {
-		return titleDiv.replaceAll("_.*", "")
-				.replaceAll("-.*", "")
+		return titleDiv.replaceAll("_.*", "").replaceAll("-.*", "")
 //				.replaceAll("&nbsp;", "")
-				
-				;
+
+		;
 	}
-	
-	public  String filter(String html) {
-		return html.replaceAll("<[^>]+>", "")
-				.replaceAll("&nbsp;;", "")
-				.replaceAll("&nbsp;", "")
-				.replaceAll(".*请把本站网址推荐给您的朋友吧.*", "")
-				.replaceAll(".*求票.*", "")
-				.replaceAll(".*为了方便下次阅读.*", "")
-				.replace(".*阅读最新章节.*", "")
-				.replaceAll(".*手机用户请到.*", "")
+
+	public String filter(String html) {
+		return html.replaceAll("<[^>]+>", "").replaceAll("&nbsp;;", "").replaceAll("&nbsp;", "")
+				.replaceAll(".*请把本站网址推荐给您的朋友吧.*", "").replaceAll(".*求票.*", "").replaceAll(".*为了方便下次阅读.*", "")
+				.replace(".*阅读最新章节.*", "").replaceAll(".*手机用户请到.*", "")
 //				.replaceAll("readx();", "")
 //				.replaceAll("ahref=", "")
 //				.replaceAll("^\"http:.*;", "")
@@ -65,49 +58,51 @@ public class Util {
 //				.replaceAll("www.x4399.com", "")
 //				.replaceAll("wap.x4399.com", "")
 //				.replaceAll("uservote();←→addbookcase();read4();", "")
-				;
+		;
 
 	}
-	
-	public  int getElementNumber(Element o1) {
+
+	public int getElementNumber(Element o1) {
 		String value1 = o1.text();
 		List<Integer> res = indexofAll(value1, "第");
 		List<Integer> res3 = indexofAll(value1, "节");
 		List<Integer> res4 = indexofAll(value1, "章");
-		if((res3.size() >= 1 || res4.size() >= 1) && res.size() > 0){
-			int end = res3.size() >= 1?res3.get(0):res4.get(0);
-			int begine = getFirstIndex(res,end);
-			String compare1 = value1.substring(begine+1, end);
-			if(canConvert(compare1)){
+		if ((res3.size() >= 1 || res4.size() >= 1) && res.size() > 0) {
+			int end = res3.size() >= 1 ? res3.get(0) : res4.get(0);
+			int begine = getFirstIndex(res, end);
+			String compare1 = value1.substring(begine + 1, end);
+			if (canConvert(compare1)) {
 				return convertChineseToNum(compare1);
 			}
-			
-			if(isNumChacter(compare1)){
+
+			if (isNumChacter(compare1)) {
 				return Integer.parseInt(compare1);
 			}
 		}
 		return 0;
 	}
-	
-	private  int getFirstIndex(List<Integer> res, Integer integer) {
-		int value = res.size()-1;
-		while(res.get(value) > integer) value--;
+
+	private int getFirstIndex(List<Integer> res, Integer integer) {
+		int value = res.size() - 1;
+		while (res.get(value) > integer)
+			value--;
 		return res.get(value);
 	}
-	public  List<Integer> indexofAll(String des,String s){
+
+	public List<Integer> indexofAll(String des, String s) {
 		List<Integer> value = new ArrayList<Integer>();
-		if(StringUtils.isAnyBlank(des,s) || des.indexOf(s) == -1){
+		if (StringUtils.isAnyBlank(des, s) || des.indexOf(s) == -1) {
 			return value;
 		}
-		
+
 		int begine = des.indexOf(s);
-		while(begine != -1){
+		while (begine != -1) {
 			value.add(begine);
-			begine = des.indexOf(s, begine+1);
+			begine = des.indexOf(s, begine + 1);
 		}
-		
+
 		return value;
-		
+
 	}
 
 	private void ini() {
@@ -152,7 +147,6 @@ public class Util {
 		return res;
 	}
 
-	
 	public static boolean canConvert(String value) {
 		if (StringUtil.isNotBlank(value)) {
 			for (char ch : value.toCharArray()) {
@@ -176,7 +170,7 @@ public class Util {
 		int begine = china.indexOf("第");
 		int select = china.indexOf("章");
 		int select1 = china.indexOf("节");
-		select= select<select1?select:select1;
+		select = select < select1 ? select : select1;
 
 		if (begine != -1 && select != -1) {
 			return convertChineseToNum(china.substring(begine + 1, select));
@@ -202,54 +196,60 @@ public class Util {
 		return builder.toString();
 	}
 
-	public static boolean isNumChacter(String value){
+	public static boolean isNumChacter(String value) {
 		return StringUtils.isNumeric(value);
 	}
 
 	public static void comapre(String textContent, String textContent2) {
-		int i = 0,j=0,flag1=0,containerrorright=0,containerrorlength=0;
+		int i = 0, j = 0, flag1 = 0, containerrorright = 0, containerrorlength = 0;
 		boolean choose = false;
-		for (; i < textContent.length(); ) {
-			if(textContent.charAt(i) == textContent2.charAt(j)){
-				i++;j++;
-				if(choose){
+		for (; i < textContent.length();) {
+			if (textContent.charAt(i) == textContent2.charAt(j)) {
+				i++;
+				j++;
+				if (choose) {
 					containerrorright++;
 					containerrorlength++;
 				}
-			}else{
-				choose=true;
+			} else {
+				choose = true;
 				containerrorlength++;
-				i++;j++;
+				i++;
+				j++;
 				flag1++;
-				if(flag1>15)break;
+				if (flag1 > 15)
+					break;
 			}
 		}
-		
-		if(containerrorright < 50){
+
+		if (containerrorright < 50) {
 			i = i - containerrorlength;
 			j = j - containerrorlength;
 		}
-		
-		
+
 		choose = false;
-		int ii = textContent.length() - 1 ,jj=textContent2.length() -1,flag2=0,containerror2=0,containerrorlength2=0;
-		for (; ii > 0 && jj >0; ) {
-			if(textContent.charAt(ii) == textContent2.charAt(jj)){
-				ii--;jj--;
-				if(choose){
+		int ii = textContent.length() - 1, jj = textContent2.length() - 1, flag2 = 0, containerror2 = 0,
+				containerrorlength2 = 0;
+		for (; ii > 0 && jj > 0;) {
+			if (textContent.charAt(ii) == textContent2.charAt(jj)) {
+				ii--;
+				jj--;
+				if (choose) {
 					containerror2++;
 					containerrorlength2++;
 				}
-			}else{
-				choose=true;
-				ii--;jj--;
+			} else {
+				choose = true;
+				ii--;
+				jj--;
 				flag2++;
 				containerrorlength2++;
-				if(flag2>15)break;
+				if (flag2 > 15)
+					break;
 			}
 		}
-		
-		if(containerror2 < 50){
+
+		if (containerror2 < 50) {
 			ii = ii + containerrorlength2;
 			jj = jj + containerrorlength2;
 		}
@@ -259,73 +259,89 @@ public class Util {
 
 	/**
 	 * according to Document find Chapter Link by a tag
-	 * */
+	 */
 	public List<String> getChapterLinks(Document doc) {
-		
+
 		List<String> tmp = new ArrayList<String>();
 		Elements alinks = doc.select("a");
-		int size = 0;
-		if(alinks != null && !alinks.isEmpty()) {
-			for (Element element : alinks) {
-				String linkText = element.text();
-				if(linkText.contains("800")) {
-					System.out.println(linkText);
+//		int size = 0;
+		if (alinks != null && !alinks.isEmpty()) {
+			for (int i = 0; i < alinks.size(); i++) {
+				Element element = alinks.get(i);
+				if (i == alinks.size() - 1) {
+					System.out.println();
 				}
-				if(ConfigUtil.chapterLinkPattern.matcher(linkText).find())
-				{
+				String linkText = element.text();
+				if (ConfigUtil.chapterLinkPattern.matcher(linkText).find()) {
 					tmp.add(element.absUrl("href"));
-					size++;
+//					size++;
 				}
 			}
 		}
-		Collections.sort(tmp);
+//		Collections.sort(tmp);
 		return tmp;
 	}
 
 	/**
 	 * according to Document find Content Div
-	 * @return 
-	 * */
+	 * 
+	 * @return
+	 */
 	public Node getContentDivHtmlElement(Document doc) {
 		Elements content = doc.select("div[id=\"content\"]");
-		if(content == null || content.isEmpty()) {
+		if (content == null || content.isEmpty()) {
 			content = doc.select("div[id=\"booktext\"]");
 		}
-		
-		//情况： https://www.x23us.com/html/72/72784/32647450.html
-		if(content == null || content.isEmpty()) {
+
+		// 情况： https://www.x23us.com/html/72/72784/32647450.html
+		if (content == null || content.isEmpty()) {
 			content = doc.select("dd[id=contents]");
 		}
-		
-		//情况：https://www.mkxs8.com/267/267529/57141436.html
-		if(content == null || content.isEmpty()) {
+
+		// 情况：https://www.mkxs8.com/267/267529/57141436.html
+		if (content == null || content.isEmpty()) {
 			content = doc.select("div[id=\"text_area\"]");
 		}
-		
-		if(content != null && !content.isEmpty()) {
+
+		// 情况：https://www.mkxs8.com/267/267529/57141436.html
+		if (content == null || content.isEmpty()) {
+			content = doc.select("div[id=\"view_content_txt\"]");
+		}
+
+		if (content != null && !content.isEmpty()) {
 			return content.get(0);
 		}
-		
-		//情况：https://www.ptwxz.com/html/6/6035/3314738.html
-		if(content == null || content.isEmpty()) {
+
+		// 情况：https://www.ptwxz.com/html/6/6035/3314738.html
+		if (content == null || content.isEmpty()) {
 			content = doc.select("body");
 			StringBuilder builder = new StringBuilder();
 			for (Node element : content.get(0).childNodes()) {
-				if(element instanceof TextNode && StringUtils.isNoneBlank(((TextNode) element).text())) {
+				if (element instanceof TextNode && StringUtils.isNoneBlank(((TextNode) element).text())) {
 					builder.append(((TextNode) element).text() + "\n\n");
+				}
+			}
+
+			// https://www.danmei.la/book/11/11764/1280527.html
+			if (builder.toString() == null || builder.toString().equals("")) {
+				content = doc.select("p[class=\"Text\"]");
+				if (!content.isEmpty()) {
+					for (Node element : content.get(0).childNodes()) {
+						if (element instanceof TextNode && StringUtils.isNoneBlank(((TextNode) element).text())) {
+							builder.append(((TextNode) element).text() + "\n\n");
+						}
+					}
 				}
 			}
 			return new TextNode(builder.toString(), doc.baseUri());
 		}
-		
-		
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * calculate the content pattern
-	 * */
+	 */
 	public void comparePattern(Elements html1, Elements html2) {
 		for (int i = 0; i < html1.size(); i++) {
 			Element index = html1.get(i);
@@ -333,12 +349,12 @@ public class Util {
 			System.out.println(index);
 			System.out.println(index2);
 		}
-		
+
 	}
 
 	public Element getTitleDiv(Document doc) {
 		Elements title = doc.select("title");
-		if(title != null && !title.isEmpty()) {
+		if (title != null && !title.isEmpty()) {
 			return title.get(0);
 		}
 		return null;
@@ -346,48 +362,48 @@ public class Util {
 
 	/**
 	 * 文件的大小
-	 * */
-	public static long getDirSize(File file) {     
-        //判断文件是否存在     
-        if (file.exists()) {     
-            //如果是目录则递归计算其内容的总大小    
-            if (file.isDirectory()) {     
-                File[] children = file.listFiles();     
-                long size = 0;     
-                for (File f : children)     
-                    size += getDirSize(f);     
-                return size;     
-            } else {//如果是文件则直接返回其大小,以“兆”为单位   
-                return file.length();  
-            }     
-        } else {     
-        	log.info("文件或者文件夹:{} 不存在，请检查路径是否正确！",file.getAbsolutePath());     
-            return 0L;     
-        }     
-    }
+	 */
+	public static long getDirSize(File file) {
+		// 判断文件是否存在
+		if (file.exists()) {
+			// 如果是目录则递归计算其内容的总大小
+			if (file.isDirectory()) {
+				File[] children = file.listFiles();
+				long size = 0;
+				for (File f : children)
+					size += getDirSize(f);
+				return size;
+			} else {// 如果是文件则直接返回其大小,以“兆”为单位
+				return file.length();
+			}
+		} else {
+			log.info("文件或者文件夹:{} 不存在，请检查路径是否正确！", file.getAbsolutePath());
+			return 0L;
+		}
+	}
 
 	public static void ensureSpace() {
 		File file = new File(ConfigUtil.fileStorePath);
 		long tmpsize = getDirSize(file);
-		if(tmpsize >= ConfigUtil.fileStoreMaxSizePath) {
-			File[] children = file.listFiles();  
+		if (tmpsize >= ConfigUtil.fileStoreMaxSizePath) {
+			File[] children = file.listFiles();
 			Arrays.parallelSort(children, new Comparator<File>() {
 				@Override
 				public int compare(File o1, File o2) {
 					return (int) (o1.lastModified() - o2.lastModified());
 				}
 			});
-			
-			//ensure length
-			if(children.length > 0) {
+
+			// ensure length
+			if (children.length > 0) {
 				children[0].delete();
 			}
-			
+
 			ensureSpace();
 		}
 		return;
 	}
-	
+
 	/**
 	 * @param args
 	 */
@@ -405,17 +421,11 @@ public class Util {
 //		System.out.println(Util.convertChineseToNum("一千零二"));
 //		System.out.println(Util.convertChineseToNum("一万一千零二十二"));
 //		System.out.println(Util.convertChineseToNum("一万零一十二"));
-		
-		String value = "<!--over-->\n" + 
-				" <br>\n" + 
-				" <br>★★\n" + 
-				" <a href=\"http://www.pfwx.com/\">平凡文学</a>★★ 如果觉得\n" + 
-				"手机用户请到\n" + 
-				" https://m.33zw.com/xiaoshuo/154621/阅读最新章节\n" + 
-				"\n" + 
-				" https://www.33zw.com/xiaoshuo/154621/，谢谢您的支持！！\n" + 
-				""+
-				" <a href=\"http://www.pfwx.com/wozhenbushishenxian/\">我真不是神仙</a>好看，请把本站网址推荐给您的朋友吧！ \n";
+
+		String value = "<!--over-->\n" + " <br>\n" + " <br>★★\n" + " <a href=\"http://www.pfwx.com/\">平凡文学</a>★★ 如果觉得\n"
+				+ "手机用户请到\n" + " https://m.33zw.com/xiaoshuo/154621/阅读最新章节\n" + "\n"
+				+ " https://www.33zw.com/xiaoshuo/154621/，谢谢您的支持！！\n" + ""
+				+ " <a href=\"http://www.pfwx.com/wozhenbushishenxian/\">我真不是神仙</a>好看，请把本站网址推荐给您的朋友吧！ \n";
 		System.out.println(Util.getInstance().filter(value));
 
 	}
