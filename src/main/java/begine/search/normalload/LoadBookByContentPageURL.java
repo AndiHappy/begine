@@ -1,4 +1,4 @@
-package begine.load;
+package begine.search.normalload;
 
 import java.io.File;
 import java.io.IOException;
@@ -72,7 +72,7 @@ public class LoadBookByContentPageURL {
 	}
 
 	public static void main(String[] args) {
-		String utl = "https://www.jjxs.la/read/26834/";
+		String utl = "https://www.uukanshu.com/b/73612/";
 		LoadBookByContentPageURL test = new LoadBookByContentPageURL(utl);
 		List<String> pages = test.page.getPagesLinks();
 		for (String string : pages) {

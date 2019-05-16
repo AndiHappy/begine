@@ -1,9 +1,7 @@
-package begine.load;
+package begine.search.normalload;
 
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
-import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import begine.util.LoadCondition;
@@ -29,7 +27,7 @@ public class Page extends BasePage {
 	public void iniPageContent() {
 		if (LoadConditionPoolUtil.waitLoadDoc(this, 20)) {
 			Document doc = this.getDoc();
-			Node contentDiv = Util.getInstance().getContentDivHtmlElement(doc);
+			Node contentDiv = Util.getInstance().getContentDivHtmlElement(doc,this.host);
 			if (contentDiv != null) {
 				String divFilterString = Util.getInstance().filter(contentDiv.toString());
 				setContentText(divFilterString);

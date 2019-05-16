@@ -1,4 +1,4 @@
-package begine.load;
+package begine.search.normalload;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +67,7 @@ public class ContentPage extends BasePage {
 //					public void run() {
 						if (LoadConditionPoolUtil.waitLoadDoc(page, 20)) {
 							Document doc = page.getDoc();
-							Node contentDiv = Util.getInstance().getContentDivHtmlElement(doc);
+							Node contentDiv = Util.getInstance().getContentDivHtmlElement(doc,this.getHost());
 							if (contentDiv != null) {
 								String divFilterString = Util.getInstance().filter(contentDiv.toString());
 								page.setContentText(divFilterString);

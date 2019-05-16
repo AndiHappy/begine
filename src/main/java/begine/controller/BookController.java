@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import begine.load.LoadBookByContentPageURL;
+import begine.search.normalload.LoadBookByContentPageURL;
 import begine.server.search.GoogleSearch;
 import begine.util.BResult;
 import begine.util.TimeFormat;

@@ -1,4 +1,4 @@
-package begine.load;
+package begine.search.normalload;
 
 import java.io.IOException;
 import java.net.URL;
@@ -47,13 +47,13 @@ public abstract class BasePage implements LoadCondition {
 
 	public static String userAgent = "Mozilla/5.0 (Windows NT 6.3; WOW64) " + "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36";
 	//每一个页面对应的URL
-	private volatile String url;
+	public volatile String url;
 	//每一个网页对应的Doc，这个内存占用可能需要优化！！
-	private volatile Document doc;
+	public volatile Document doc;
 	
-	private volatile String host;
+	public volatile String host;
 	
-	private volatile boolean ini;
+	public volatile boolean ini;
 	
 	public BasePage(String url) {
 		ini(url);

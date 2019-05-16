@@ -3,7 +3,6 @@ package begine.util;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +17,9 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import begine.search.mouse.HostSetting;
+import begine.search.mouse.PatternUtil;
+
 /**
  * @author zhailz
  *
@@ -26,6 +28,7 @@ import org.slf4j.LoggerFactory;
 public class Util {
 	private static Logger log = LoggerFactory.getLogger(Util.class);
 	private static final HashMap<Character, Integer> array = new HashMap<Character, Integer>();
+	private static final PatternUtil pt = PatternUtil.instanct();
 
 	private Util() {
 		ini();
@@ -46,19 +49,24 @@ public class Util {
 		;
 	}
 
+	/**
+	 * 处理html 过滤的东西，比较的麻烦一步一步的进行
+	 * */
 	public String filter(String html) {
-		return html.replaceAll("<[^>]+>", "").replaceAll("&nbsp;;", "").replaceAll("&nbsp;", "")
-				.replaceAll(".*请把本站网址推荐给您的朋友吧.*", "").replaceAll(".*求票.*", "").replaceAll(".*为了方便下次阅读.*", "")
-				.replace(".*阅读最新章节.*", "").replaceAll(".*手机用户请到.*", "")
-//				.replaceAll("readx();", "")
-//				.replaceAll("ahref=", "")
-//				.replaceAll("^\"http:.*;", "")
-//				.replaceAll("read3();", "")
-//				.replaceAll("bdshare();", "")
-//				.replaceAll("www.x4399.com", "")
-//				.replaceAll("wap.x4399.com", "")
-//				.replaceAll("uservote();←→addbookcase();read4();", "")
-		;
+		
+		/** 删除普通标签  */
+	  String nohtml = html.replaceAll("<(S*?)[^>]*>.*?|<.*? />", "");
+	  /** 删除转义字符 */
+	  String content = nohtml.replaceAll("&.{2,6}?;", "");
+	  
+	  /** 删除google 广告产生的遗留 */
+	  String nogooglead = content.replaceAll("(\\(.*);", "");
+	  
+	  /** 删除添加的广告*/
+	 
+	  String v = nogooglead.replaceAll("https:\\/\\/.*|请记住本书.*;", "");
+
+		return v;
 
 	}
 
@@ -284,11 +292,25 @@ public class Util {
 
 	/**
 	 * according to Document find Content Div
+	 * @param host 
 	 * 
 	 * @return
 	 */
-	public Node getContentDivHtmlElement(Document doc) {
-		Elements content = doc.select("div[id=\"content\"]");
+	public Node getContentDivHtmlElement(Document doc, String host) {
+		Elements content = null;
+		HostSetting	hostSetting = 	pt.getHostSetting(host);
+		if(hostSetting != null) {
+			String pattern = hostSetting.getChooseContentPattern();
+			content = doc.select(pattern);
+			if(content != null && !content.isEmpty()) {
+				return content.get(0);
+			}
+		}
+		
+		if (content == null || content.isEmpty()) {
+			content = doc.select("div[id=\"content\"]");
+		}
+		
 		if (content == null || content.isEmpty()) {
 			content = doc.select("div[id=\"booktext\"]");
 		}
@@ -307,7 +329,12 @@ public class Util {
 		if (content == null || content.isEmpty()) {
 			content = doc.select("div[id=\"view_content_txt\"]");
 		}
-
+		
+	// 情况：https://www.mkxs8.com/267/267529/57141436.html
+			if (content == null || content.isEmpty()) {
+				content = doc.select("div[id=\"contentbox\"]");
+			}
+		
 		if (content != null && !content.isEmpty()) {
 			return content.get(0);
 		}
