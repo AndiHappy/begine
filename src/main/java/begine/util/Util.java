@@ -44,7 +44,7 @@ public class Util {
 
 	public String filterTitle(String titleDiv) {
 		return titleDiv.replaceAll("_.*", "").replaceAll("-.*", "")
-//				.replaceAll("&nbsp;", "")
+		//				.replaceAll("&nbsp;", "")
 
 		;
 	}
@@ -53,18 +53,18 @@ public class Util {
 	 * 处理html 过滤的东西，比较的麻烦一步一步的进行
 	 * */
 	public String filter(String html) {
-		
+
 		/** 删除普通标签  */
-	  String nohtml = html.replaceAll("<(S*?)[^>]*>.*?|<.*? />", "");
-	  /** 删除转义字符 */
-	  String content = nohtml.replaceAll("&.{2,6}?;", "");
-	  
-	  /** 删除google 广告产生的遗留 */
-	  String nogooglead = content.replaceAll("(\\(.*);", "");
-	  
-	  /** 删除添加的广告*/
-	 
-	  String v = nogooglead.replaceAll("https:\\/\\/.*|请记住本书.*;", "");
+		String nohtml = html.replaceAll("<(S*?)[^>]*>.*?|<.*? />", "");
+		/** 删除转义字符 */
+		String content = nohtml.replaceAll("&.{2,6}?;", "");
+
+		/** 删除google 广告产生的遗留 */
+		String nogooglead = content.replaceAll("(\\(.*);", "");
+
+		/** 删除添加的广告*/
+
+		String v = nogooglead.replaceAll("https:\\/\\/.*|请记住本书.*;", "");
 
 		return v;
 
@@ -272,7 +272,6 @@ public class Util {
 
 		List<String> tmp = new ArrayList<String>();
 		Elements alinks = doc.select("a");
-//		int size = 0;
 		if (alinks != null && !alinks.isEmpty()) {
 			for (int i = 0; i < alinks.size(); i++) {
 				Element element = alinks.get(i);
@@ -281,14 +280,42 @@ public class Util {
 				}
 				String linkText = element.text();
 				if (ConfigUtil.chapterLinkPattern.matcher(linkText).find()) {
+					System.out.println(linkText);
 					tmp.add(element.absUrl("href"));
-//					size++;
 				}
 			}
 		}
-//		Collections.sort(tmp);
+		//		Collections.sort(tmp);
 		return tmp;
 	}
+
+
+	public String getContentFromDoc(Document doc, String host) {
+		Elements content = null;
+		StringBuilder res = new StringBuilder();
+		HostSetting hostSetting = pt.getHostSetting(host);
+		if (hostSetting != null) {
+			String pattern = hostSetting.getChooseContentPattern();
+			content = doc.select(pattern);
+			if (content != null && !content.isEmpty()) {
+				List<Node> listnodes = content.get(0).childNodes();
+				for (int i = 0;i< listnodes.size() - 1; i++) {
+					 Node result = listnodes.get(i);
+					 if(result instanceof TextNode ) {
+						 res.append(((TextNode)result).text());
+						 res.append("\n");
+					 }
+				}
+			}else {
+				throw new IllegalAccessError(host +" Pattern setting no content elements .");
+
+			}
+		}else {
+			throw new IllegalAccessError("No Pattern setting for: "+ host);
+		}
+		return res.toString();
+	}
+
 
 	/**
 	 * according to Document find Content Div
@@ -298,19 +325,20 @@ public class Util {
 	 */
 	public Node getContentDivHtmlElement(Document doc, String host) {
 		Elements content = null;
-		HostSetting	hostSetting = 	pt.getHostSetting(host);
-		if(hostSetting != null) {
+		HostSetting hostSetting = pt.getHostSetting(host);
+		if (hostSetting != null) {
 			String pattern = hostSetting.getChooseContentPattern();
 			content = doc.select(pattern);
-			if(content != null && !content.isEmpty()) {
+			if (content != null && !content.isEmpty()) {
+				//				filterResult(content.get(0),"div");
 				return content.get(0);
 			}
 		}
-		
+
 		if (content == null || content.isEmpty()) {
 			content = doc.select("div[id=\"content\"]");
 		}
-		
+
 		if (content == null || content.isEmpty()) {
 			content = doc.select("div[id=\"booktext\"]");
 		}
@@ -329,12 +357,12 @@ public class Util {
 		if (content == null || content.isEmpty()) {
 			content = doc.select("div[id=\"view_content_txt\"]");
 		}
-		
-	// 情况：https://www.mkxs8.com/267/267529/57141436.html
-			if (content == null || content.isEmpty()) {
-				content = doc.select("div[id=\"contentbox\"]");
-			}
-		
+
+		// 情况：https://www.mkxs8.com/267/267529/57141436.html
+		if (content == null || content.isEmpty()) {
+			content = doc.select("div[id=\"contentbox\"]");
+		}
+
 		if (content != null && !content.isEmpty()) {
 			return content.get(0);
 		}
@@ -365,6 +393,7 @@ public class Util {
 
 		return null;
 	}
+
 
 	/**
 	 * calculate the content pattern
@@ -435,19 +464,19 @@ public class Util {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-//		Util.getInstance().ensureSpace();
-//		System.out.println(Util.convertChineseToNum("二"));
-//		System.out.println(Util.convertChineseToNum("十"));
-//		System.out.println(Util.convertChineseToNum("十二"));
-//		System.out.println(Util.convertChineseToNum("二十二"));
-//		System.out.println(Util.convertChineseToNum("三十"));
-//		System.out.println(Util.convertChineseToNum("二百零二"));
-//		System.out.println(Util.convertChineseToNum("二百二十二"));
-//		System.out.println(Util.convertChineseToNum("五百三十二"));
-//		System.out.println(Util.convertChineseToNum("一千五百三十二"));
-//		System.out.println(Util.convertChineseToNum("一千零二"));
-//		System.out.println(Util.convertChineseToNum("一万一千零二十二"));
-//		System.out.println(Util.convertChineseToNum("一万零一十二"));
+		//		Util.getInstance().ensureSpace();
+		//		System.out.println(Util.convertChineseToNum("二"));
+		//		System.out.println(Util.convertChineseToNum("十"));
+		//		System.out.println(Util.convertChineseToNum("十二"));
+		//		System.out.println(Util.convertChineseToNum("二十二"));
+		//		System.out.println(Util.convertChineseToNum("三十"));
+		//		System.out.println(Util.convertChineseToNum("二百零二"));
+		//		System.out.println(Util.convertChineseToNum("二百二十二"));
+		//		System.out.println(Util.convertChineseToNum("五百三十二"));
+		//		System.out.println(Util.convertChineseToNum("一千五百三十二"));
+		//		System.out.println(Util.convertChineseToNum("一千零二"));
+		//		System.out.println(Util.convertChineseToNum("一万一千零二十二"));
+		//		System.out.println(Util.convertChineseToNum("一万零一十二"));
 
 		String value = "<!--over-->\n" + " <br>\n" + " <br>★★\n" + " <a href=\"http://www.pfwx.com/\">平凡文学</a>★★ 如果觉得\n"
 				+ "手机用户请到\n" + " https://m.33zw.com/xiaoshuo/154621/阅读最新章节\n" + "\n"

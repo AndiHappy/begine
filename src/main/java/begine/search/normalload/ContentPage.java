@@ -67,12 +67,17 @@ public class ContentPage extends BasePage {
 //					public void run() {
 						if (LoadConditionPoolUtil.waitLoadDoc(page, 20)) {
 							Document doc = page.getDoc();
-							Node contentDiv = Util.getInstance().getContentDivHtmlElement(doc,this.getHost());
-							if (contentDiv != null) {
-								String divFilterString = Util.getInstance().filter(contentDiv.toString());
-								page.setContentText(divFilterString);
-							} else {
-								throw new IllegalAccessError("NONE content div " + getUrl() + " !");
+							String content = Util.getInstance().getContentFromDoc(doc,this.getHost());
+							if(content != null &&  content.length() > 200) {
+								page.setContentText(content);
+							}else {
+								Node contentDiv = Util.getInstance().getContentDivHtmlElement(doc,this.getHost());
+								if (contentDiv != null) {
+									String divFilterString = Util.getInstance().filter(contentDiv.toString());
+									page.setContentText(divFilterString);
+								} else {
+									throw new IllegalAccessError("NONE content div " + getUrl() + " !");
+								}
 							}
 
 							Element titleDiv = Util.getInstance().getTitleDiv(doc);
@@ -101,7 +106,7 @@ public class ContentPage extends BasePage {
 			if (LoadConditionPoolUtil.waitLoadDoc(this, 20)) {
 				Document doc = this.getDoc();
 				List<String> pagelinks = Util.getInstance().getChapterLinks(doc);
-				log.info("calculate chapter num: {}", pagelinks.size());
+//				log.info("calculate chapter num: {}", pagelinks.size());
 				setPagesLinks(pagelinks);
 			} else {
 				throw new IllegalAccessError("load " + getUrl() + " timeout");
