@@ -53,33 +53,44 @@ public class ContentPage extends BasePage {
 	}
 
 	public void iniPagesAndLoad() {
-		if (getPages() == null && getPagesLinks() != null) {
+//		if (getPages() == null && getPagesLinks() != null) {
 			List<Page> pages = new ArrayList<Page>();
 			for (String pageLink : getPagesLinks()) {
 				Page page = new Page(pageLink);
 				pages.add(page);
 			}
 			setPages(pages);
+			loadAndCauPages(pages);
+//				});
+//			}
 
-			for (Page page : pages) {
+//		}
+	}
+
+	private void loadAndCauPages(List<Page> pages) throws IllegalAccessError {
+		for (Page page : pages) {
 //				LoadConditionPoolUtil.submit(new Runnable() {
 //					@Override
 //					public void run() {
-						if (LoadConditionPoolUtil.waitLoadDoc(page, 20)) {
-							Document doc = page.getDoc();
-							String content = Util.getInstance().getContentFromDoc(doc,this.getHost());
-							if(content != null &&  content.length() > 200) {
-								page.setContentText(content);
-							}else {
-								Node contentDiv = Util.getInstance().getContentDivHtmlElement(doc,this.getHost());
-								if (contentDiv != null) {
-									String divFilterString = Util.getInstance().filter(contentDiv.toString());
-									page.setContentText(divFilterString);
-								} else {
-									throw new IllegalAccessError("NONE content div " + getUrl() + " !");
-								}
+					if (LoadConditionPoolUtil.waitLoadDoc(page, 20) && !page.isHasinipage()) {
+						Document doc = page.getDoc();
+						String content = Util.getInstance().getContentFromDoc(doc,this.getHost());
+						if(content != null &&  content.length() > 200) {
+							page.setContentText(content);
+						}else {
+							Node contentDiv = Util.getInstance().getContentDivHtmlElement(doc,this.getHost());
+							if (contentDiv != null) {
+								String divFilterString = Util.getInstance().filter(contentDiv.toString());
+								page.setContentText(divFilterString);
+							} else {
+								throw new IllegalAccessError("NONE content div " + getUrl() + " !");
 							}
+						}
 
+						String titleFromSetting =  Util.getInstance().getTitleFromSetting(doc,this.host);
+						if(titleFromSetting != null && !titleFromSetting.isEmpty()) {
+							page.setTitle(titleFromSetting);
+						}else {
 							Element titleDiv = Util.getInstance().getTitleDiv(doc);
 							if (titleDiv != null) {
 								String titleString = Util.getInstance().filterTitle(titleDiv.text());
@@ -87,17 +98,14 @@ public class ContentPage extends BasePage {
 							} else {
 								throw new IllegalAccessError("NONE title Div " + getUrl() + " !");
 							}
-
-							page.setHasinipage(true);
-
-						} else {
-							throw new IllegalAccessError("load " + getUrl() + " timeout");
 						}
-					}
-//				});
-//			}
 
-		}
+						page.setHasinipage(true);
+
+					} else {
+						throw new IllegalAccessError("load " + getUrl() + " timeout");
+					}
+				}
 	}
 
 	public List<String> calculateEveryPage() {

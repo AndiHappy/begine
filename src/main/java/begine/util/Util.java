@@ -3,6 +3,7 @@ package begine.util;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -43,10 +44,9 @@ public class Util {
 	}
 
 	public String filterTitle(String titleDiv) {
-		return titleDiv.replaceAll("_.*", "").replaceAll("-.*", "")
+//		return titleDiv.replaceAll("_.*", "").replaceAll("-.*", "")
 		//				.replaceAll("&nbsp;", "")
-
-		;
+		return titleDiv;
 	}
 
 	/**
@@ -63,7 +63,6 @@ public class Util {
 		String nogooglead = content.replaceAll("(\\(.*);", "");
 
 		/** 删除添加的广告*/
-
 		String v = nogooglead.replaceAll("https:\\/\\/.*|请记住本书.*;", "");
 
 		return v;
@@ -280,12 +279,23 @@ public class Util {
 				}
 				String linkText = element.text();
 				if (ConfigUtil.chapterLinkPattern.matcher(linkText).find()) {
+					
 					System.out.println(linkText);
+//					Matcher matcher = ConfigUtil.chapterLinkPattern.matcher(linkText);
+//					if(matcher.find()) {
+//						String pattern = matcher.group(0);
+//						if(pattern != null && !pattern.isEmpty()) {
+//							int pageNum = Util.convertChineseToNum(linkText);
+//							if(pageNum > 0) {
+//								
+//							}
+//						}
+//					}
 					tmp.add(element.absUrl("href"));
 				}
 			}
 		}
-		//		Collections.sort(tmp);
+		Collections.sort(tmp);
 		return tmp;
 	}
 
@@ -301,13 +311,19 @@ public class Util {
 				List<Node> listnodes = content.get(0).childNodes();
 				for (int i = 0;i< listnodes.size() - 1; i++) {
 					 Node result = listnodes.get(i);
-					 if(result instanceof TextNode ) {
-						 res.append(((TextNode)result).text());
+					 if(result instanceof TextNode  ) {
+						 String texttmp = ((TextNode)result).toString().replace("&nbsp;", "");
+						 res.append(texttmp);
+						 res.append("\n");
+					 }
+					 if(result instanceof  Element && ((Element) result).tagName().equals("p") ) {
+						 String texttmp = ((Element)result).toString().replace("&nbsp;", "");
+						 res.append(texttmp);
 						 res.append("\n");
 					 }
 				}
 			}else {
-				throw new IllegalAccessError(host +" Pattern setting no content elements .");
+				log.warn(host +" Pattern setting no content elements {}",doc.baseUri());
 
 			}
 		}else {
@@ -415,6 +431,19 @@ public class Util {
 		}
 		return null;
 	}
+	
+	public String getTitleFromSetting(Document doc, String host) {
+		Elements titleElement = null;
+		HostSetting hostSetting = pt.getHostSetting(host);
+		if (hostSetting != null) {
+			String pattern = hostSetting.getChooseTitlePattern();
+			titleElement = doc.select(pattern);
+			if (titleElement != null && !titleElement.isEmpty()) {
+				return titleElement.get(0).ownText();
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * 文件的大小
@@ -485,5 +514,4 @@ public class Util {
 		System.out.println(Util.getInstance().filter(value));
 
 	}
-
 }

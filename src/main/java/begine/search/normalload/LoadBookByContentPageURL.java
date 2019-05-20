@@ -2,7 +2,6 @@ package begine.search.normalload;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.lang3.StringUtils;
@@ -72,17 +71,19 @@ public class LoadBookByContentPageURL {
 	}
 
 	public static void main(String[] args) {
-		String utl = "https://www.biduo.cc/biquge/49_49768/";
+		String utl = "https://www.biduo.cc/biquge/47_47282/";
 		LoadBookByContentPageURL test = new LoadBookByContentPageURL(utl);
-		List<String> pages = test.page.getPagesLinks();
-		for (String string : pages) {
-			log.info(string);
-		}
+//		List<String> pages = test.page.getPagesLinks();
+//		for (String string : pages) {
+//			log.info(string);
+//		}
 		try {
 			test.loadBookToFile();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		System.exit(0);
 	}
 
 	public ContentPage getPage() {

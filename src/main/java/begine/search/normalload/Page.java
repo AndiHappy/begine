@@ -31,7 +31,6 @@ public class Page extends BasePage {
 			if (contentDiv != null) {
 				String divFilterString = Util.getInstance().filter(contentDiv.toString());
 				setContentText(divFilterString);
-				
 			} else {
 				throw new IllegalAccessError("NONE content div " + getUrl() + " BOOKTITLE !");
 			}
