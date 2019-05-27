@@ -313,25 +313,96 @@ public class Util {
 					 Node result = listnodes.get(i);
 					 if(result instanceof TextNode  ) {
 						 String texttmp = ((TextNode)result).toString().replace("&nbsp;", "");
-						 res.append(texttmp);
-						 res.append("\n");
+						 if(texttmp.length() > 50) {
+							 int length = texttmp.length();
+							 int j = 1;
+							 for (; j*50 < length; j=j+1) {
+								 String tmp = texttmp.substring((j-1)*50, j*50);
+								 res.append(tmp);
+								 res.append("\n");
+							}
+							 if(length > (j-1)*50) {
+								 res.append(texttmp.subSequence((j-1)*50, length));
+								 res.append("\n");
+							 }
+							 
+							 
+						 }else {
+							 res.append(texttmp);
+							 res.append("\n");
+						 }
+						
 					 }
 					 if(result instanceof  Element && ((Element) result).tagName().equals("p") ) {
 						 String texttmp = ((Element)result).toString().replace("&nbsp;", "");
-						 res.append(texttmp);
-						 res.append("\n");
+						 if(texttmp.length() > 200) {
+							 int length = texttmp.length();
+							 int j = 1;
+							 for (; j*50 < length; j=j+1) {
+								 res.append(texttmp.substring((j-1)*50, j*50));
+								 res.append("\n");
+							}
+							 if(length > j*50) {
+								 res.append(texttmp.subSequence(j*50, length));
+								 res.append("\n");
+							 }
+							 
+							 
+						 }else {
+							 res.append(texttmp);
+							 res.append("\n");
+						 }
 					 }
 				}
 			}else {
+//				寻找所有的childNodes
+				List<Node> nodes = new ArrayList<Node>();
+				findAllNodes(doc.childNodes(),nodes);
+				for (Node node : nodes) {
+					TextNode nodetext = ((TextNode)node);
+					Node  parent = nodetext.parent();
+					if(parent instanceof Element ) {
+						String tagname = ((Element)parent).tagName();
+						if(tagname.equals("a")) {
+							continue;
+						}
+						
+						if(tagname.equals("div")) {
+							continue;
+						}
+					}
+					System.out.println(parent);
+					System.out.println(((TextNode)node).text());
+				}
 				log.warn(host +" Pattern setting no content elements {}",doc.baseUri());
 
 			}
 		}else {
 			throw new IllegalAccessError("No Pattern setting for: "+ host);
 		}
+//		System.out.println(res.toString());
 		return res.toString();
 	}
 
+
+	private List<Node> findAllNodes(List<Node> childNodes,List<Node> nodes ) {
+		if(childNodes != null && !childNodes.isEmpty()) {
+			for (int i = 0; i < childNodes.size(); i++) {
+				Node node = childNodes.get(i);
+				if(node instanceof Element) {
+					String tagname = ((Element)node).tagName();
+					if(!tagname.equals("head")) {
+						findAllNodes(node.childNodes(),nodes);
+					}
+				}
+				
+				if(node instanceof TextNode) {
+					nodes.add(node);
+				}
+			}
+		}		
+		return null;
+	}
 
 	/**
 	 * according to Document find Content Div

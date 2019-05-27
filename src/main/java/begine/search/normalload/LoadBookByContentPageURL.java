@@ -1,7 +1,10 @@
 package begine.search.normalload;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.lang3.StringUtils;
@@ -71,19 +74,53 @@ public class LoadBookByContentPageURL {
 	}
 
 	public static void main(String[] args) {
-		String utl = "https://www.biduo.cc/biquge/47_47282/";
+		String utl = "http://www.shuquge.com/txt/89290/index.html";
 		LoadBookByContentPageURL test = new LoadBookByContentPageURL(utl);
 //		List<String> pages = test.page.getPagesLinks();
 //		for (String string : pages) {
 //			log.info(string);
 //		}
-		try {
-			test.loadBookToFile();
-		} catch (IOException e) {
-			e.printStackTrace();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		while(true) {
+			try {
+				String value = reader.readLine();
+				int page = Integer.parseInt(value);
+				ContentPage pages = test.getPage();
+				List<Page> pagecontents = pages.getPages();
+				if(page < pagecontents.size()) {
+					Page pagecontent = pagecontents.get(page);
+					if(pagecontent.ini) {
+						String content = pagecontent.getContentText();
+//						int contentlength = content.length();
+						System.out.println(content);
+//						int i = 0;
+//						while(true) {
+//							value = reader.readLine();
+//							if(StringUtils.isNoneBlank(value)) {
+//								if((i+1)* 200 < contentlength) {
+//									System.out.println(content.substring(i*200 , (i+1)*200));
+//									i++;
+//								}else {
+//									System.out.println(content.substring(i*200 , contentlength));
+//									break;
+//								}
+//						}
+//						}
+					}
+				}
+				
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
 		}
-		
-		System.exit(0);
+//		try {
+//			test.loadBookToFile();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		System.exit(0);
 	}
 
 	public ContentPage getPage() {
