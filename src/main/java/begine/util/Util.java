@@ -3,7 +3,6 @@ package begine.util;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -268,7 +267,6 @@ public class Util {
 	 * according to Document find Chapter Link by a tag
 	 */
 	public List<String> getChapterLinks(Document doc) {
-
 		List<String> tmp = new ArrayList<String>();
 		Elements alinks = doc.select("a");
 		if (alinks != null && !alinks.isEmpty()) {
@@ -279,26 +277,43 @@ public class Util {
 				}
 				String linkText = element.text();
 				if (ConfigUtil.chapterLinkPattern.matcher(linkText).find()) {
-					
-					System.out.println(linkText);
-//					Matcher matcher = ConfigUtil.chapterLinkPattern.matcher(linkText);
-//					if(matcher.find()) {
-//						String pattern = matcher.group(0);
-//						if(pattern != null && !pattern.isEmpty()) {
-//							int pageNum = Util.convertChineseToNum(linkText);
-//							if(pageNum > 0) {
-//								
-//							}
-//						}
-//					}
 					tmp.add(element.absUrl("href"));
 				}
 			}
 		}
-		Collections.sort(tmp);
+//		Collections.sort(tmp);
+		return tmp;
+	}
+	
+	/**
+	 * according to Document find Chapter Link by a tag
+	 */
+	public List<Element> getChapterLinkElement(Document doc) {
+		List<Element> tmp = new ArrayList<Element>();
+		Elements alinks = doc.select("a");
+		if (alinks != null && !alinks.isEmpty()) {
+			for (int i = 0; i < alinks.size(); i++) {
+				Element element = alinks.get(i);
+				if (i == alinks.size() - 1) {
+					System.out.println();
+				}
+				String linkText = element.text();
+				if (ConfigUtil.chapterLinkPattern.matcher(linkText).find()) {
+					tmp.add(element);
+				}
+			}
+		}
+//		Collections.sort(tmp);
 		return tmp;
 	}
 
+	/**
+	 * 过滤出来都是字符的
+	 * */
+	private String filterPattern(String pattern) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	public String getContentFromDoc(Document doc, String host) {
 		Elements content = null;
@@ -578,11 +593,37 @@ public class Util {
 		//		System.out.println(Util.convertChineseToNum("一万一千零二十二"));
 		//		System.out.println(Util.convertChineseToNum("一万零一十二"));
 
-		String value = "<!--over-->\n" + " <br>\n" + " <br>★★\n" + " <a href=\"http://www.pfwx.com/\">平凡文学</a>★★ 如果觉得\n"
-				+ "手机用户请到\n" + " https://m.33zw.com/xiaoshuo/154621/阅读最新章节\n" + "\n"
-				+ " https://www.33zw.com/xiaoshuo/154621/，谢谢您的支持！！\n" + ""
-				+ " <a href=\"http://www.pfwx.com/wozhenbushishenxian/\">我真不是神仙</a>好看，请把本站网址推荐给您的朋友吧！ \n";
-		System.out.println(Util.getInstance().filter(value));
+//		System.out.println(Util.getInstance().filter(value));
 
+	}
+
+	/**
+	 * 
+	 * */
+	public static File findFile(File file, String begine) {
+		if(file.exists() && file.isDirectory()) {
+			throw new IllegalAccessError(file.getAbsolutePath() +" no exist!");
+		}
+		ArrayList<File> filechildren = new ArrayList<File>();
+		getFiles(file,filechildren);
+		
+		for (int i = 0; i < filechildren.size(); i++) {
+			if(filechildren.get(i).getName().startsWith(begine)) {
+				return filechildren.get(i);
+			}
+		}
+		
+		return null;
+	}
+
+	private static void getFiles(File file,ArrayList<File> filechildren) {
+		if(file.isFile()) {
+			filechildren.add(file);
+		}else {
+			File[] tmps = file.listFiles();
+			for (int i = 0; i < tmps.length; i++) {
+				getFiles(tmps[i], filechildren);
+			}
+		}
 	}
 }

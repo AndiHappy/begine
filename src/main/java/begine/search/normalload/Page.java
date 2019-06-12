@@ -101,7 +101,7 @@ public class Page extends BasePage {
 		System.out.println(pa.getContentText());
 		*/
 		
-		Page pa = new Page("https://www.x23us.com/html/72/72784/32647450.html");
+		Page pa = new Page("");
 		pa.iniPageTitle();
 		pa.iniPageContent();
 		System.out.println(pa.getTitle());

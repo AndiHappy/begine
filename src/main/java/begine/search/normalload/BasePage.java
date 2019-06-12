@@ -7,8 +7,6 @@ import java.util.Random;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import begine.util.LoadCondition;
 import begine.util.LoadConditionPoolUtil;
@@ -19,7 +17,7 @@ import begine.util.LoadConditionPoolUtil;
  */
 public abstract class BasePage implements LoadCondition {
 	
-	private Logger log = LoggerFactory.getLogger(getClass());
+//	private Logger log = LoggerFactory.getLogger(getClass());
 	
 	public static String[] userAgentArrays = new String[] {
 	"Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.8) Gecko Fedora/1.9.0.8-1.fc10 Kazehakase/0.5.6",
@@ -55,6 +53,9 @@ public abstract class BasePage implements LoadCondition {
 	
 	public volatile boolean ini;
 	
+	public BasePage() {
+	}
+	
 	public BasePage(String url) {
 		ini(url);
 	}
@@ -64,6 +65,7 @@ public abstract class BasePage implements LoadCondition {
 		//默认加载页面
 		loadURL();
 	}
+	
 	
 	private void loadURL() {
 		LoadConditionPoolUtil.submit(new Runnable() {
@@ -88,7 +90,7 @@ public abstract class BasePage implements LoadCondition {
 		            setHost(host);
 		            setIni(true);
 		          } catch (IOException e) {
-		            log.error("{},初始化出现错误：{}", url, e);
+//		            log.error("{},初始化出现错误：{}", url, e);
 		          }
 		        }
 		      }

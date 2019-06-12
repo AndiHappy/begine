@@ -2,6 +2,7 @@ package begine.search.normalload;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -26,6 +27,8 @@ public class ContentPage extends BasePage {
 	private String bookTitle = null;
 
 	private List<String> pagesLinks = null;
+	
+	private Map<SortablePage,String> sortPage = null;
 
 	public ContentPage(String url) {
 		super(url);
@@ -45,7 +48,6 @@ public class ContentPage extends BasePage {
 				if(titles.isEmpty()) {
 					setBookTitle((long)Math.random()+"-00001");
 				}
-//				throw new IllegalAccessError("NONE " + getUrl() + " BOOKTITLE !");
 			}
 		} else {
 			throw new IllegalAccessError("load " + getUrl() + " timeout");
@@ -53,7 +55,6 @@ public class ContentPage extends BasePage {
 	}
 
 	public void iniPagesAndLoad() {
-//		if (getPages() == null && getPagesLinks() != null) {
 			List<Page> pages = new ArrayList<Page>();
 			for (String pageLink : getPagesLinks()) {
 				Page page = new Page(pageLink);
@@ -61,10 +62,6 @@ public class ContentPage extends BasePage {
 			}
 			setPages(pages);
 			loadAndCauPages(pages);
-//				});
-//			}
-
-//		}
 	}
 
 	private void loadAndCauPages(List<Page> pages) throws IllegalAccessError {
@@ -110,17 +107,23 @@ public class ContentPage extends BasePage {
 
 	public List<String> calculateEveryPage() {
 
-		if (getPagesLinks() == null) {
-			if (LoadConditionPoolUtil.waitLoadDoc(this, 20)) {
-				Document doc = this.getDoc();
-				List<String> pagelinks = Util.getInstance().getChapterLinks(doc);
-//				log.info("calculate chapter num: {}", pagelinks.size());
-				setPagesLinks(pagelinks);
-			} else {
-				throw new IllegalAccessError("load " + getUrl() + " timeout");
+		if (LoadConditionPoolUtil.waitLoadDoc(this, 20)) {
+			Document doc = this.getDoc();
+			List<String> pagelinks = Util.getInstance().getChapterLinks(doc);
+			setPagesLinks(pagelinks);
+			
+			List<Element> elements = Util.getInstance().getChapterLinkElement(doc);
+			for (int i = 0; i < elements.size(); i++) {
+				Element ele = elements.get(i);
+				String href = ele.absUrl("href");
+				String value =href.substring(href.lastIndexOf("/")+1, href.length());
+				System.out.println(ele.text() + " " + value);
 			}
+		} else {
+			throw new IllegalAccessError("load " + getUrl() + " timeout");
 		}
-
+	
+		
 		return getPagesLinks();
 
 	}

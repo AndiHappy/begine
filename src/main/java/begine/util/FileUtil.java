@@ -57,6 +57,24 @@ public class FileUtil {
 			return false;
 		}
 	}
+	
+	/**
+	 * 写入文件，不存在则创建文件后保存
+	 * 
+	 */
+	public  boolean saveValueToFile(String filefullPath, String value, boolean append) {
+		try {
+			File file = new File(filefullPath);
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			FileUtils.write(file, value, "UTF-8", append);
+			return true;
+		} catch (IOException e) {
+			log.error("存储数据出现错误：{}", e);
+			return false;
+		}
+	}
 
 	public  boolean saveHost(String host) {
 		try {
