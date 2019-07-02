@@ -71,7 +71,7 @@ public class LoadBookByContentPageURL {
 	}
 
 	public static void main(String[] args) {
-		String utl = "https://www.biquge.com.cn/book/30309/";
+		String utl = "https://www.biquge.com.cn/book/28389/";
 		LoadBookByContentPageURL test = new LoadBookByContentPageURL(utl);
 //		List<String> pages = test.page.getPagesLinks();
 //		for (String string : pages) {
