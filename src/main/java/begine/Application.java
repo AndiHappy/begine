@@ -9,15 +9,16 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-
 public class Application {
-	
 	@Value("${server.port}")
 	public static int port;
 
 	public static void main(String[] args) {
 		HashMap<String, Object> props = new HashMap<>();
 		props.put("server.port", port);
-		new SpringApplicationBuilder().sources(Application.class).properties(props).run(args);
+		SpringApplicationBuilder app = new SpringApplicationBuilder();
+		app.sources(Application.class);
+		app.properties(props);
+		app.run(args);
 	}
 }
