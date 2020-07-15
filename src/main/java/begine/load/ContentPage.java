@@ -66,6 +66,7 @@ public class ContentPage extends BasePage {
 //					@Override
 //					public void run() {
 						if (LoadConditionPoolUtil.waitLoadDoc(page, 20)) {
+							log.info("load:{}",page.getTitle());
 							Document doc = page.getDoc();
 							Node contentDiv = Util.getInstance().getContentDivHtmlElement(doc);
 							if (contentDiv != null) {
