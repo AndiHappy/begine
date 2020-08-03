@@ -5,15 +5,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import sun.jvm.hotspot.debugger.NoSuchSymbolException;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class LoadMain {
 
-    public String url = "https://www.230book.com/book/8563/1570231.html";
+    public String url = "http://www.tycqxs.com/13_13184/5309474.html";
 
     private String currentResult;
     private String[] currentResultArray;

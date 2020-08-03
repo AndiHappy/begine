@@ -31,8 +31,16 @@ public class LoadBookByContentPageURL {
 	//文件名称
 	private String fileName = null;
 
+	private String contenturl = null;
+
 	public LoadBookByContentPageURL(String contenturl) {
-		setPage(new ContentPage(contenturl));
+		this.contenturl = contenturl;
+		load();
+	}
+
+	public void load(){
+		ContentPage page = new ContentPage(contenturl);
+		setPage(page);
 	}
 
 	public boolean loadBookToFile() throws IOException {
@@ -72,17 +80,22 @@ public class LoadBookByContentPageURL {
 	}
 
 	public static void main(String[] args) {
-		String utl = "https://www.zanghaihuatxt.com/86661_86661961/";
-		LoadBookByContentPageURL test = new LoadBookByContentPageURL(utl);
-		List<String> pages = test.page.getPagesLinks();
-		for (String string : pages) {
-			log.info(string);
-		}
-		try {
-			test.loadBookToFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		if (args != null && args.length > 0){
+			String utl = "https://www.booktxt.com/11_11824/";//args[0];//"http://www.6lk.net/book/40868.html";
+			LoadBookByContentPageURL test = new LoadBookByContentPageURL(utl);
+			List<String> pages = test.page.getPagesLinks();
+			for (String string : pages) {
+				log.info(string);
+			}
+			try {
+				test.loadBookToFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+//		}else{
+//			log.info("no argue");
+//		}
+
 	}
 
 	public ContentPage getPage() {

@@ -62,11 +62,10 @@ public class ContentPage extends BasePage {
 			setPages(pages);
 
 			for (Page page : pages) {
-//				LoadConditionPoolUtil.submit(new Runnable() {
-//					@Override
-//					public void run() {
-						if (LoadConditionPoolUtil.waitLoadDoc(page, 20)) {
-							log.info("load:{}",page.getTitle());
+				LoadConditionPoolUtil.submit(new Runnable() {
+					@Override
+					public void run() {
+						if (LoadConditionPoolUtil.waitLoadDoc(page, 10)) {
 							Document doc = page.getDoc();
 							Node contentDiv = Util.getInstance().getContentDivHtmlElement(doc);
 							if (contentDiv != null) {
@@ -83,16 +82,15 @@ public class ContentPage extends BasePage {
 							} else {
 								throw new IllegalAccessError("NONE title Div " + getUrl() + " !");
 							}
-
+							log.info("load:{}",page.getTitle());
 							page.setHasinipage(true);
 
 						} else {
 							throw new IllegalAccessError("load " + getUrl() + " timeout");
 						}
 					}
-//				});
-//			}
-
+				});
+			}
 		}
 	}
 
