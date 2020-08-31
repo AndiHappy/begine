@@ -23,7 +23,9 @@ public class Page extends BasePage {
 	private volatile boolean hasinipage;
 
 	public Page(String url) {
+
 		super(url);
+		iniPageContent();
 	}
 
 	public void iniPageContent() {
