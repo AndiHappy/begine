@@ -93,8 +93,6 @@ public abstract class BasePage implements LoadCondition {
 		        }
 		      }
 		    });
-
-		
 	}
 
 	/**

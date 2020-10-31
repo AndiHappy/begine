@@ -81,7 +81,7 @@ public class LoadBookByContentPageURL {
 
 	public static void main(String[] args) {
 //		if (args != null && args.length > 0){
-			String utl = "https://www.qqxs.cc/xs/40/40305/";//args[0];//"http://www.6lk.net/book/40868.html";
+			String utl = "https://www.yanqbook.com/4/4817/";//args[0];//"http://www.6lk.net/book/40868.html";
 			LoadBookByContentPageURL test = new LoadBookByContentPageURL(utl);
 			List<String> pages = test.page.getPagesLinks();
 			for (String string : pages) {

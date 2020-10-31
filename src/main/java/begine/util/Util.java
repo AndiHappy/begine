@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import book.HTMLPage;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.util.StringUtil;
 import org.jsoup.nodes.Document;
@@ -30,6 +31,39 @@ public class Util {
 	private Util() {
 		ini();
 	}
+
+	/**
+	 * 寻找下一个链接
+	 * */
+    public String findNextLink(Document doc) {
+		Elements value = doc.select("a:containsOwn(下一页)");
+		int elementSize = value.size();
+		if(2 == elementSize || 1 == elementSize) return value.first().absUrl("href");
+    	return null;
+
+
+    }
+
+	public String getHTMLTitle(HTMLPage current) {
+		Document doc = current.getDoc();
+		Elements value = doc.select("h3:containsOwn(第)");
+		int elementSize = value.size();
+		if(elementSize > 0) return  value.first().text();
+		return null;
+	}
+
+	public String getHTMLContent(HTMLPage current) {
+		Document doc = current.getDoc();
+		Node contentDiv = Util.getInstance().getContentDivHtmlElement(doc);
+		if (contentDiv != null) {
+			String divFilterString = Util.getInstance().filter(contentDiv.toString());
+			return divFilterString;
+		} else {
+			throw new IllegalAccessError("NONE content div " + current.getUrl() + " !");
+		}
+
+	}
+
 
 	private static final class UtilHolder {
 		private static final Util instance = new Util();
@@ -302,6 +336,13 @@ public class Util {
 		if (content == null || content.isEmpty()) {
 			content = doc.select("div[id=\"text_area\"]");
 		}
+
+		// 情况：https://www.mkxs8.com/267/267529/57141436.html
+		if (content == null || content.isEmpty()) {
+			content = doc.select("p[id=\"articlecontent\"]");
+		}
+
+
 
 		// 情况：https://www.mkxs8.com/267/267529/57141436.html
 		if (content == null || content.isEmpty()) {

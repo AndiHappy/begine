@@ -62,9 +62,9 @@ public class ContentPage extends BasePage {
 			setPages(pages);
 
 			for (Page page : pages) {
-				LoadConditionPoolUtil.submit(new Runnable() {
-					@Override
-					public void run() {
+//				LoadConditionPoolUtil.submit(new Runnable() {
+//					@Override
+//					public void run() {
 						if (LoadConditionPoolUtil.waitLoadDoc(page, 10)) {
 							Document doc = page.getDoc();
 							Node contentDiv = Util.getInstance().getContentDivHtmlElement(doc);
@@ -88,8 +88,8 @@ public class ContentPage extends BasePage {
 						} else {
 							throw new IllegalAccessError("load " + getUrl() + " timeout");
 						}
-					}
-				});
+//					}
+//				});
 			}
 		}
 	}
