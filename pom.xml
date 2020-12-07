@@ -28,6 +28,14 @@
 
 	<dependencies>
 
+		<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>3.141.59</version>
+		</dependency>
+
+
 		<!-- 文本比较算法 -->
 		<dependency>
 			<groupId>com.google.code.externalsortinginjava</groupId>
