@@ -20,10 +20,10 @@ public class ScheduledController {
 
     @Scheduled(initialDelay=1000, fixedRate=5000)
     public void reportCurrentTime() {
-    	File file = new File(ConfigUtil.fileStorePath);
-    	long value = Util.getDirSize(file);
+//    	File file = new File(ConfigUtil.fileStorePath);
+//    	long value = Util.getDirSize(file);
 //    	logger.info("current:{}, long:{} , size:{} M ",dateFormat.format(new Date()),value,value/1024/1024);
-    	Util.ensureSpace();
+//    	Util.ensureSpace();
     }
 
     
